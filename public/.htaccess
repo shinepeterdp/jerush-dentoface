@@ -1,0 +1,31 @@
+Options -MultiViews
+
+# Ensure proper MIME types for JavaScript, CSS, and WebP
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/webp .webp
+</IfModule>
+
+# Prevent search engines from indexing the development site
+<IfModule mod_headers.c>
+  SetEnvIf Host "^dev\.jerushdentoface\.com$" IS_DEV_SITE
+  Header set X-Robots-Tag "noindex, nofollow" env=IS_DEV_SITE
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Pass Authorization header through to PHP
+  RewriteCond %{HTTP:Authorization} ^(.*)
+  RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+  RewriteRule ^index\.html$ - [L]
+
+  # Do NOT rewrite static assets to index.html if missing (prevents MIME type error)
+  RewriteCond %{REQUEST_URI} !^.*\.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|eot)$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . index.html [L]
+</IfModule>
