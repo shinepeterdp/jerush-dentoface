@@ -1,8 +1,8 @@
 import { apiClient } from './api';
 import { defaultMarqueeSettings, defaultMarqueeItems } from '../data/marqueeNews';
 
-const STORAGE_KEY_ITEMS = 'jerush_marquee_items';
-const STORAGE_KEY_SETTINGS = 'jerush_marquee_settings';
+const STORAGE_KEY_ITEMS = 'jerush_marquee_items_v2';
+const STORAGE_KEY_SETTINGS = 'jerush_marquee_settings_v2';
 export const MARQUEE_UPDATE_EVENT = 'jerush_marquee_updated';
 
 // Helper to notify all active listeners (e.g. Header Marquee component)

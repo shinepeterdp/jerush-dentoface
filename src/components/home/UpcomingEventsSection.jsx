@@ -74,51 +74,26 @@ export default function UpcomingEventsSection() {
     galleryService.getEvents()
       .then(adminEvents => {
         if (Array.isArray(adminEvents) && adminEvents.length > 0) {
-          // Filter out obsolete 2025 entries so 2026 events take precedence
-          const validAdminEvents = adminEvents.filter(evt => {
-            const titleLower = (evt.title || '').toLowerCase();
-            return !titleLower.includes('2k25') && !titleLower.includes('2025');
-          });
-
-          if (validAdminEvents.length > 0) {
-            // Format admin events to ensure compatible journal fields
-            const formattedAdminEvents = validAdminEvents.map(evt => {
-              const staticMatch = defaultEvents.find(d => d.id === evt.slug || d.title === evt.title || d.galleryEventId === evt.id);
+          // Merge admin photo counts & album IDs into standard curated events without creating duplicate tabs
+          const updated = defaultEvents.map(evt => {
+            const match = adminEvents.find(adm => {
+              const admTitle = (adm.title || '').toLowerCase();
+              const evtTitle = evt.title.toLowerCase();
+              return adm.id === evt.galleryEventId || admTitle.includes('onam') && evt.id.includes('onam') ||
+                admTitle.includes('anniversary') && evt.id.includes('anniversary') ||
+                admTitle.includes('jerushaligne') && evt.id.includes('jerushaligne') ||
+                admTitle.includes('bladbin') && evt.id.includes('bladbin');
+            });
+            if (match) {
               return {
-                id: evt.slug || `admin-event-${evt.id}`,
-                title: evt.title || staticMatch?.title || 'Jerush Special Event 2026',
-                tagline: evt.tagline || staticMatch?.tagline || 'Surgical Excellence & Compassionate Healthcare',
-                category: evt.category || staticMatch?.category || 'Celebration',
-                status: evt.status === 'completed' || staticMatch?.status === 'completed' ? 'completed' : 'upcoming',
-                date: evt.date || staticMatch?.date || 'September 2026',
-                isoDate: evt.isoDate || staticMatch?.isoDate || '2026-09-05T10:00:00',
-                time: evt.time || staticMatch?.time || '10:00 AM IST',
-                location: evt.location || staticMatch?.location || 'Jerush Main Campus Auditorium, Thuckalay',
-                badge: evt.badge || staticMatch?.badge || (evt.status === 'completed' ? 'Completed Milestone' : 'Upcoming Event'),
-                badgeColor: staticMatch?.badgeColor || 'from-brandSky to-cyan-400',
-                coverImage: evt.coverImage || staticMatch?.coverImage || '/images/events/jerushaligne-opening-event/jerush-outdoor.webp',
-                galleryEventId: evt.id || staticMatch?.galleryEventId,
-                photoCount: evt.photoCount || evt.photos?.length || staticMatch?.photoCount || 30,
-                description: evt.description || staticMatch?.description || 'Jerush Dentofacial celebration and healthcare event.',
-                schedule: evt.schedule || staticMatch?.schedule || [
-                  { time: '10:00 AM', activity: 'Inauguration & Welcome Session' },
-                  { time: '02:00 PM', activity: 'Clinical & Patient Felicitation' }
-                ],
-                organizer: evt.organizer || staticMatch?.organizer || 'Jerush Executive Board'
+                ...evt,
+                photoCount: match.photos?.length || match.photo_count || evt.photoCount,
+                galleryEventId: match.id || evt.galleryEventId,
               };
-            });
-
-            // Start with authoritative default 2026 events, then append any new admin events
-            const merged = [...defaultEvents];
-            formattedAdminEvents.forEach(adm => {
-              const exists = merged.some(m => m.id === adm.id || m.title.toLowerCase() === adm.title.toLowerCase());
-              if (!exists) {
-                merged.push(adm);
-              }
-            });
-
-            setEventsList(merged);
-          }
+            }
+            return evt;
+          });
+          setEventsList(updated);
         }
       })
       .catch(err => {
@@ -183,17 +158,17 @@ export default function UpcomingEventsSection() {
       <div className="absolute -top-32 -right-32 w-[450px] h-[450px] bg-brandSky/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-[450px] h-[450px] bg-brandBlue/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 relative z-10">
+      <div className="max-w-[1480px] xl:max-w-[1640px] 2xl:max-w-[1780px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
 
         {/* Section Header & Apple-Style Segmented Tab Switcher */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-10">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 text-[11px] font-headline font-bold uppercase tracking-wider text-brandSky mb-3">
+          <div className="max-w-2xl 2xl:max-w-3xl text-left">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-brandBlue/5 border border-brandBlue/15 rounded-full text-[11px] xl:text-xs font-headline font-bold uppercase tracking-wider text-brandBlue mb-3">
               <BookOpen className="w-3.5 h-3.5 text-brandSky" />
-              Jerush Celebrations Journal &amp; Milestones
+              Jerush Celebrations &amp; Milestones
             </span>
 
-            <h2 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl text-slate-900 leading-tight tracking-tight">
+            <h2 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl 2xl:text-5xl text-slate-900 leading-tight tracking-tight">
               Events &amp; Celebrations at{' '}
               <span className="bg-gradient-to-r from-brandBlue to-brandSky bg-clip-text text-transparent">
                 Jerush Dentofacial
@@ -201,52 +176,68 @@ export default function UpcomingEventsSection() {
             </h2>
           </div>
 
-          {/* Apple Segmented Control Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-inner backdrop-blur-md w-full lg:w-auto">
-            {eventsList.map((item, idx) => {
-              const isActive = activeIndex === idx;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleTabClick(idx)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-headline font-bold transition-all duration-300 cursor-pointer flex items-center gap-1.5 ${isActive
-                      ? 'bg-white text-slate-900 shadow-md shadow-slate-200/80 scale-[1.02]'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-white/60'
-                    }`}
-                >
-                  {item.id.includes('onam') && <span>🌺</span>}
-                  {item.id.includes('anniversary') && <span>👑</span>}
-                  {item.id.includes('jerushaligne') && <span>🏢</span>}
-                  {item.id.includes('bladbin') && <span>🎂</span>}
-                  {!item.id.includes('onam') && !item.id.includes('anniversary') && !item.id.includes('jerushaligne') && !item.id.includes('bladbin') && <span>🎉</span>}
-                  <span>{item.title.split(' Celebration')[0]}</span>
-                  {item.status === 'completed' && (
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-0.5" title="Completed Event" />
-                  )}
-                </button>
-              );
-            })}
+          {/* Right: Clean Segmented Tab Switcher & Arrow Controls */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-1 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-inner backdrop-blur-md overflow-x-auto max-w-full">
+              {eventsList.map((item, idx) => {
+                const isActive = activeIndex === idx;
+                const shortTitles = ['Onam 2026', '24th Anniversary', 'Jerushaligne Units', "Founder's Day"];
+                const title = shortTitles[idx] || item.title.replace(/ Celebration| 2026/g, '');
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleTabClick(idx)}
+                    className={`px-3.5 py-2 xl:px-4 xl:py-2.5 rounded-xl text-xs xl:text-sm font-headline font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${isActive
+                        ? 'bg-white text-brandBlue shadow-md shadow-slate-300/60 scale-[1.02]'
+                        : 'text-slate-500 hover:text-slate-900 hover:bg-white/60'
+                      }`}
+                  >
+                    {title}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Slider Controls */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              <button
+                onClick={handlePrevSlide}
+                className="w-10 h-10 xl:w-11 xl:h-11 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-brandBlue hover:border-brandSky/60 shadow-sm flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+                title="Previous Event"
+                aria-label="Previous Event"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleNextSlide}
+                className="w-10 h-10 xl:w-11 xl:h-11 rounded-xl bg-white border border-slate-200/90 text-slate-700 hover:text-brandBlue hover:border-brandSky/60 shadow-sm flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+                title="Next Event"
+                aria-label="Next Event"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* AUTHENTIC PHYSICAL OPEN BOOK CONTAINER (JERUSH SIGNATURE GRADIENT HARDCOVER BORDER) */}
-        <div className="bg-gradient-to-r from-brandBlue via-brandSky to-brandBlue p-2.5 sm:p-3.5 rounded-[38px] shadow-[0_25px_70px_rgba(40,83,164,0.25)] relative group overflow-hidden border border-brandSky/40">
+        <div className="bg-gradient-to-r from-brandBlue via-brandSky to-brandBlue p-2.5 sm:p-3.5 xl:p-4 2xl:p-5 rounded-[38px] xl:rounded-[44px] 2xl:rounded-[50px] shadow-[0_25px_70px_rgba(40,83,164,0.25)] relative group overflow-hidden border border-brandSky/40">
 
           {/* HANGING GOLD SILK BOOKMARK RIBBON FROM TOP CENTER */}
-          <div className="hidden lg:flex flex-col items-center absolute top-0 left-[53%] -translate-x-1/2 z-40 w-5 pointer-events-none">
-            <div className="w-full h-24 sm:h-28 bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 shadow-2xl rounded-b-md border-x border-amber-200/60 flex flex-col justify-end items-center pb-1">
-              <Sparkles className="w-3.5 h-3.5 text-slate-955 animate-pulse" />
+          <div className="hidden lg:flex flex-col items-center absolute top-0 left-[52%] -translate-x-1/2 z-40 w-5 xl:w-6 pointer-events-none">
+            <div className="w-full h-24 sm:h-28 xl:h-32 bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 shadow-2xl rounded-b-md border-x border-amber-200/60 flex flex-col justify-end items-center pb-1">
+              <Sparkles className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-slate-955 animate-pulse" />
             </div>
           </div>
 
           {/* INNER TWO-PAGE OPEN BOOK SPREAD */}
-          <div className="bg-[#FCFDFE] rounded-[30px] overflow-hidden flex flex-col lg:flex-row items-stretch relative border border-slate-200/90 shadow-inner">
+          <div className="bg-[#FCFDFE] rounded-[30px] xl:rounded-[36px] 2xl:rounded-[40px] overflow-hidden flex flex-col lg:flex-row items-stretch relative border border-slate-200/90 shadow-inner">
 
             {/* CENTER BOOK SPINE CREASE DIVIDER */}
-            <div className="hidden lg:block absolute left-[53%] top-0 bottom-0 w-6 -translate-x-1/2 bg-gradient-to-r from-slate-300/40 via-slate-400/60 to-slate-300/40 pointer-events-none z-30 shadow-[inset_0_0_15px_rgba(0,0,0,0.08)] border-x border-slate-300/50" />
+            <div className="hidden lg:block absolute left-[52%] top-0 bottom-0 w-6 xl:w-8 -translate-x-1/2 bg-gradient-to-r from-slate-300/40 via-slate-400/60 to-slate-300/40 pointer-events-none z-30 shadow-[inset_0_0_15px_rgba(0,0,0,0.08)] border-x border-slate-300/50" />
 
             {/* LEFT BOOK PAGE: STATIC JOURNAL CONTENT PAGE */}
-            <div className="flex-grow flex items-center p-6 sm:p-8 lg:p-11 xl:p-12 bg-[#FCFDFE] lg:w-[53%] shrink-0 relative z-10">
+            <div className="flex-grow flex items-center p-6 sm:p-8 lg:p-10 xl:p-14 2xl:p-16 bg-[#FCFDFE] lg:w-[52%] shrink-0 relative z-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentEvent.id}
@@ -254,12 +245,12 @@ export default function UpcomingEventsSection() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="w-full max-w-[540px] mx-auto lg:mx-0 space-y-5 text-left"
+                  className="w-full max-w-[620px] xl:max-w-[700px] 2xl:max-w-[800px] mx-auto lg:mx-0 space-y-5 xl:space-y-6 text-left"
                 >
                   {/* Category Pill & Page Number Indicator */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10.5px] font-headline font-bold uppercase tracking-wider ${currentEvent.status === 'completed'
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10.5px] xl:text-xs font-headline font-bold uppercase tracking-wider ${currentEvent.status === 'completed'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/70'
                           : currentEvent.id.includes('onam')
                             ? 'bg-amber-50 text-amber-700 border border-amber-200/70'
@@ -268,13 +259,13 @@ export default function UpcomingEventsSection() {
                         {currentEvent.status === 'completed' ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <Sparkles className="w-3 h-3" />}
                         {currentEvent.badge}
                       </span>
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                      <span className="text-[11px] xl:text-xs font-bold text-slate-400 uppercase tracking-widest">
                         {currentEvent.category}
                       </span>
                     </div>
 
                     {/* Book Page Indicator */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-[10.5px] font-headline font-bold text-slate-600 shadow-inner">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-[10.5px] xl:text-xs font-headline font-bold text-slate-600 shadow-inner">
                       <BookOpen className="w-3 h-3 text-brandSky" />
                       <span>Journal Page 0{activeIndex + 1} / 0{eventsList.length}</span>
                     </div>
@@ -282,38 +273,38 @@ export default function UpcomingEventsSection() {
 
                   {/* Event Title & Tagline */}
                   <div>
-                    <h3 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl text-slate-900 leading-tight tracking-tight">
+                    <h3 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-[40px] 2xl:text-[46px] text-slate-900 leading-tight tracking-tight">
                       {currentEvent.title}
                     </h3>
-                    <p className="text-brandSky font-headline font-bold text-xs sm:text-sm mt-1.5">
+                    <p className="text-brandSky font-headline font-bold text-xs sm:text-sm xl:text-base mt-1.5">
                       {currentEvent.tagline}
                     </p>
                   </div>
 
                   {/* Description */}
-                  <p className="text-slate-600 text-xs sm:text-sm lg:text-[14.5px] leading-relaxed font-medium">
+                  <p className="text-slate-600 text-xs sm:text-sm lg:text-[14.5px] xl:text-base 2xl:text-[17px] leading-relaxed font-medium">
                     {currentEvent.description}
                   </p>
 
                   {/* COUNTDOWN OR COMPLETED MILESTONE SUMMARY BADGE */}
                   <div className="pt-1">
                     {currentEvent.status === 'completed' ? (
-                      <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3 sm:p-3.5 flex items-center gap-3 shadow-sm max-w-md">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 shrink-0">
-                          <CheckCircle2 className="w-5 h-5" />
+                      <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3 sm:p-3.5 xl:p-4 flex items-center gap-3 shadow-sm max-w-md xl:max-w-lg 2xl:max-w-xl">
+                        <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 shrink-0">
+                          <CheckCircle2 className="w-5 h-5 xl:w-6 xl:h-6" />
                         </div>
                         <div className="text-left">
-                          <span className="text-[10px] font-headline font-extrabold uppercase tracking-wider text-emerald-700 block">
+                          <span className="text-[10px] xl:text-xs font-headline font-extrabold uppercase tracking-wider text-emerald-700 block">
                             Milestone Celebrated
                           </span>
-                          <span className="text-xs font-bold text-slate-900 block mt-0.5">
+                          <span className="text-xs xl:text-sm font-bold text-slate-900 block mt-0.5">
                             {currentEvent.photoCount} High-Res Exhibition Photos Published
                           </span>
                         </div>
                       </div>
                     ) : (
                       <>
-                        <span className="text-[10px] font-headline font-extrabold uppercase tracking-wider text-slate-400 block mb-2 flex items-center gap-1.5">
+                        <span className="text-[10px] xl:text-xs font-headline font-extrabold uppercase tracking-wider text-slate-400 block mb-2 flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-brandSky" /> Countdown To Event
                         </span>
                         <CountdownTimer targetIsoDate={currentEvent.isoDate} />
@@ -322,14 +313,14 @@ export default function UpcomingEventsSection() {
                   </div>
 
                   {/* Date & Location Strip */}
-                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs text-slate-600 font-medium">
+                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-4 xl:gap-6 text-xs xl:text-sm text-slate-600 font-medium">
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-4 h-4 text-brandBlue shrink-0" />
                       <span className="font-bold text-slate-900">{currentEvent.date}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span className="truncate max-w-[240px]">{currentEvent.location}</span>
+                      <span className="truncate max-w-[240px] xl:max-w-[340px] 2xl:max-w-[420px]">{currentEvent.location}</span>
                     </div>
                   </div>
 
@@ -338,7 +329,7 @@ export default function UpcomingEventsSection() {
                     {currentEvent.status === 'completed' ? (
                       <button
                         onClick={() => handleGoToGalleryAlbum(currentEvent.galleryEventId)}
-                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-headline font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group"
+                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 xl:px-7 xl:py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-headline font-bold text-xs sm:text-sm xl:text-base rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group"
                       >
                         <ImageIcon className="w-4 h-4" />
                         <span>View Exhibition Album ({currentEvent.photoCount} Photos)</span>
@@ -347,7 +338,7 @@ export default function UpcomingEventsSection() {
                     ) : (
                       <button
                         onClick={() => handleOpenModal(currentEvent)}
-                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-gradient-to-r from-brandBlue to-brandSky text-white font-headline font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group"
+                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 xl:px-7 xl:py-4 bg-gradient-to-r from-brandBlue to-brandSky text-white font-headline font-bold text-xs sm:text-sm xl:text-base rounded-xl shadow-lg shadow-brandBlue/15 hover:shadow-brandBlue/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group"
                       >
                         <span>Event Schedule &amp; RSVP</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -356,7 +347,7 @@ export default function UpcomingEventsSection() {
 
                     <Link
                       to="/events"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-headline font-bold text-xs sm:text-sm rounded-xl border border-slate-200 transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3.5 xl:px-6 xl:py-4 bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-headline font-bold text-xs sm:text-sm xl:text-base rounded-xl border border-slate-200 transition-all cursor-pointer"
                     >
                       <span>All Event Albums</span>
                     </Link>
@@ -367,7 +358,7 @@ export default function UpcomingEventsSection() {
 
             {/* RIGHT BOOK PAGE: MOUNTED PHOTO PAGE WITH 3D PAGE FLIP */}
             <div
-              className="w-full lg:w-[47%] shrink-0 relative min-h-[280px] sm:min-h-[340px] lg:min-h-auto bg-[#F4F6F9] p-3 sm:p-4 flex items-center justify-center"
+              className="w-full lg:w-[48%] shrink-0 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[480px] xl:min-h-[560px] 2xl:min-h-[640px] bg-[#F4F6F9] p-3 sm:p-4 xl:p-6 flex items-center justify-center"
               style={{ perspective: 1400 }}
             >
               <AnimatePresence mode="wait" custom={direction}>

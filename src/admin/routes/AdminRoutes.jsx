@@ -14,6 +14,7 @@ import AdminSettings from '../pages/AdminSettings';
 import AdminCareers from '../pages/AdminCareers';
 import AdminTeam from '../pages/AdminTeam';
 import AdminEvents from '../pages/AdminEvents';
+import AdminCamps from '../pages/AdminCamps';
 import AdminMarquee from '../pages/AdminMarquee';
 
 function ProtectedRoute({ children }) {
@@ -36,6 +37,7 @@ export default function AdminRoutes() {
         <Route index element={<Dashboard />} />
         <Route path="marquee" element={<AdminMarquee />} />
         <Route path="events" element={<AdminEvents />} />
+        <Route path="camps" element={<AdminCamps />} />
         <Route path="doctors" element={<AdminDoctors />} />
         <Route path="treatments" element={<AdminTreatments />} />
         <Route path="blog" element={<AdminBlogs />} />

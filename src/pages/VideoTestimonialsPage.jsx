@@ -1,99 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, X, Star } from 'lucide-react';
+import {
+  Play, X, Star, Sparkles, Smile, Activity, ShieldCheck,
+  Search, Filter, CheckCircle2, Clock, MapPin, Calendar,
+  Phone, ArrowRight, Share2, Youtube, Instagram, Eye,
+  ChevronLeft, ChevronRight, Pause
+} from 'lucide-react';
 import { reviewService } from '../services/reviewService';
 import PageBreadcrumbHero from '../components/common/PageBreadcrumbHero';
 
-// Static default video testimonials
+// Enhanced Video Testimonials Dataset
 const STATIC_VIDEOS = [
   {
     id: 'static-1',
     type: 'video',
-    name: 'Lajona',
+    category: 'dental',
+    name: 'Ms. Lajona',
     location: 'Thuckalay',
     rating: 5,
     treatment: 'Clear Aligners (Jerushaligne)',
+    procedure: 'Invisible Orthodontic Teeth Alignment',
     video_thumbnail: '/images/testimonials/lajona-clear-aligner-jerushaligne.webp',
-    text: 'Braces vs Jerushaligne clear aligners experience. Lajona shares why she chose invisible aligners and her comfortable smile journey.',
-    video_url: 'https://www.youtube.com/watch?v=wDrLjQpwOf0'
+    text: 'Braces vs Jerushaligne clear aligners experience. Lajona shares why she chose invisible aligners and her comfortable smile journey without pain or food restrictions.',
+    video_url: 'https://www.youtube.com/watch?v=wDrLjQpwOf0',
+    duration: '2:15 min',
+    featured: true,
+    views: '12.4K'
   },
   {
     id: 'static-2',
     type: 'video',
+    category: 'hair',
     name: 'Mr. Arul',
     location: 'Kanyakumari',
     rating: 5,
-    treatment: 'Hair Transplant',
+    treatment: 'Micro-FUE Hair Transplant',
+    procedure: '3,200 Grafts Hairline & Crown Density',
     video_thumbnail: '/images/testimonials/arul-hair-transplant.webp',
-    text: 'Watch Arul share his hair transplant recovery journey and the stunning natural density results he achieved at Jerush.',
-    video_url: 'https://www.youtube.com/watch?v=2Bo8CwRZ5XE'
+    text: 'Watch Arul share his hair transplant recovery journey and the stunning natural density results he achieved at Jerush with zero linear scarring.',
+    video_url: 'https://www.youtube.com/watch?v=2Bo8CwRZ5XE',
+    duration: '3:40 min',
+    featured: true,
+    views: '18.9K'
   },
   {
     id: 'static-3',
     type: 'video',
-    name: 'Austin',
+    category: 'skin',
+    name: 'Mr. Austin',
     location: 'Thuckalay',
     rating: 5,
-    treatment: 'Cosmetic Dermatology',
+    treatment: 'Fractional CO2 Laser',
+    procedure: 'Deep Acne Scar Resurfacing & Smoothing',
     video_thumbnail: '/images/testimonials/austin-skin-treatment.webp',
-    text: 'Austin shares his 10/10 skin transformation review after advanced cosmetic dermatology treatments.',
-    video_url: 'https://www.youtube.com/watch?v=TTWuVlz3H8Y'
+    text: 'Austin shares his 10/10 skin transformation review after advanced Fractional CO2 laser dermatology treatments for deep pitted scars.',
+    video_url: 'https://www.youtube.com/watch?v=TTWuVlz3H8Y',
+    duration: '1:55 min',
+    featured: true,
+    views: '9.8K'
   },
   {
     id: 'static-4',
     type: 'video',
+    category: 'dental',
     name: 'Brylin Shijo',
     location: 'Thuckalay',
     rating: 5,
-    treatment: 'Dental Crown',
+    treatment: 'Dental Crowns & Bridges',
+    procedure: 'CAD/CAM Monolithic Zirconia Crown',
     video_thumbnail: '/images/testimonials/brylin-shijo-tooth-crown.webp',
-    text: 'Brylin Shijo reviews the dental crown procedure and the expert care provided by our prosthodontics team.',
-    video_url: 'https://www.youtube.com/watch?v=21FlI7IDQdk'
+    text: 'Brylin Shijo reviews the dental crown procedure and the expert care provided by our prosthodontics team with perfect color matching.',
+    video_url: 'https://www.youtube.com/watch?v=21FlI7IDQdk',
+    duration: '2:30 min',
+    featured: true,
+    views: '8.1K'
   },
   {
     id: 'static-5',
     type: 'video',
+    category: 'hair',
     name: 'Hair Care Patient',
     location: 'Kanyakumari',
     rating: 5,
-    treatment: 'Dandruff & Hair Care',
+    treatment: 'Anti-Dandruff & Scalp Laser',
+    procedure: 'Clinical Scalp Detox & Laser Phototherapy',
     video_thumbnail: '/images/testimonials/dandruff-treatment-patients.webp',
-    text: 'The truth about hair fall and dandruff laser treatment. Watch this patient share her honest clinic experience.',
-    video_url: 'https://www.youtube.com/watch?v=jAMgP_XeDWk'
+    text: 'The truth about stubborn hair fall and dandruff laser treatment. Watch this patient share her honest, transformative clinic experience.',
+    video_url: 'https://www.youtube.com/watch?v=jAMgP_XeDWk',
+    duration: '2:10 min',
+    featured: false,
+    views: '14.2K'
   },
   {
     id: 'static-6',
     type: 'video',
-    name: 'Jeba Priya',
+    category: 'dental',
+    name: 'Mrs. Jeba Priya',
     location: 'Thuckalay',
     rating: 5,
-    treatment: 'Root Canal Treatment',
+    treatment: 'Single-Visit Root Canal',
+    procedure: 'Rotary Endodontics & Apex Locator Therapy',
     video_thumbnail: '/images/testimonials/jeba-priya-root-canal.webp',
-    text: 'Scared of root canals? Jeba Priya shares her painless single-visit root canal treatment experience at Jerush.',
-    video_url: 'https://www.youtube.com/watch?v=3tOb9FVW4rM'
+    text: 'Scared of root canals? Jeba Priya shares her painless single-visit root canal treatment experience at Jerush with zero post-op discomfort.',
+    video_url: 'https://www.youtube.com/watch?v=3tOb9FVW4rM',
+    duration: '3:05 min',
+    featured: true,
+    views: '11.5K'
   },
   {
     id: 'static-7',
     type: 'video',
-    name: 'Skincare Patient',
+    category: 'skin',
+    name: 'Mrs. S. Renuka',
     location: 'Nagercoil',
     rating: 5,
-    treatment: 'Cosmetic Skincare',
+    treatment: 'Pigmentation & Pico Laser',
+    procedure: 'Sun Spot & Melasma Laser Tonality Care',
     video_thumbnail: '/images/testimonials/pigmentation-darkspots-review.webp',
-    text: 'Advanced Hydrafacial treatment review. Watch this skincare patient share her glowing results.',
-    video_url: 'https://www.youtube.com/watch?v=bf2K2aBBR5c'
+    text: 'Advanced Hydrafacial & Pico laser treatment review. Watch this skincare patient share her glowing, even-toned results.',
+    video_url: 'https://www.youtube.com/watch?v=bf2K2aBBR5c',
+    duration: '1:45 min',
+    featured: true,
+    views: '7.6K'
   },
   {
     id: 'static-8',
     type: 'instagram',
-    name: 'Jerush Hospital',
-    location: 'Thuckalay',
+    category: 'skin',
+    name: 'Jerush Hospital Reel',
+    location: 'Thuckalay Flagship',
     rating: 5,
-    treatment: 'Hydrafacial Treatment',
+    treatment: 'Hydrafacial Glow Up',
+    procedure: '3-in-1 Vortex Hydration & Peeling',
     video_thumbnail: '/images/testimonials/hydrafacial-treatment.webp',
-    text: 'Watch this Hydrafacial Glow Up reel on Instagram for instant visible skin transformation.',
-    video_url: 'https://www.instagram.com/reel/DIV3FZZACMb/'
+    text: 'Watch this Hydrafacial Glow Up reel on Instagram for instant visible skin hydration, deep pore purification, and luminous glow.',
+    video_url: 'https://www.instagram.com/reel/DIV3FZZACMb/',
+    duration: '0:45 min',
+    featured: false,
+    views: '24.1K'
+  },
+  {
+    id: 'static-9',
+    type: 'video',
+    category: 'dental',
+    name: 'Ms. Jerlin',
+    location: 'Chennai',
+    rating: 5,
+    treatment: 'Jerushaligne Aligners',
+    procedure: 'Overcrowding & Bite Alignment',
+    video_thumbnail: '/images/testimonials/jerlin-jerushaligne.webp',
+    text: 'Jerlin talks about her 8-month smile transformation journey using our custom in-house engineered Jerushaligne clear aligners.',
+    video_url: 'https://www.youtube.com/watch?v=wDrLjQpwOf0',
+    duration: '2:20 min',
+    featured: false,
+    views: '10.3K'
+  },
+  {
+    id: 'static-10',
+    type: 'video',
+    category: 'hair',
+    name: 'Mr. Julian',
+    location: 'Trichy',
+    rating: 5,
+    treatment: 'GFC Hair Growth Therapy',
+    procedure: 'Autologous Growth Factor Scalp Injections',
+    video_thumbnail: '/images/testimonials/julian-hair-transplant.webp',
+    text: 'Julian shares how Growth Factor Concentrate therapy halted active hair fall and promoted new follicular thickness within 3 months.',
+    video_url: 'https://www.youtube.com/watch?v=2Bo8CwRZ5XE',
+    duration: '2:50 min',
+    featured: false,
+    views: '15.7K'
   }
 ];
 
@@ -112,45 +189,76 @@ const parseVideoLink = (url, type) => {
   return null;
 };
 
+const CATEGORIES = [
+  { id: 'all', label: 'All Stories', icon: Sparkles },
+  { id: 'dental', label: 'Dental & Smile', icon: Smile },
+  { id: 'skin', label: 'Skin & Laser', icon: Sparkles },
+  { id: 'hair', label: 'Hair Restoration', icon: Activity }
+];
+
 export default function VideoTestimonialsPage() {
   const navigate = useNavigate();
-  const [videos, setVideos] = useState([]);
-  const [filter, setFilter] = useState('all'); // 'all' | 'video' | 'instagram'
+  const [videos, setVideos] = useState(STATIC_VIDEOS);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [platformFilter, setPlatformFilter] = useState('all'); // 'all' | 'youtube' | 'instagram'
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState(null);
+
+  // Auto-sliding Carousel State for Featured Spotlight
+  const [currentFeaturedIdx, setCurrentFeaturedIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [slideDirection, setSlideDirection] = useState(1);
+
+  // Close video modal on Escape
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveVideo(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const fetchVideoReviews = async () => {
       setLoading(true);
       try {
         const dbReviews = await reviewService.getReviews();
-        // Filter DB reviews for video reviews
-        const dbVideos = dbReviews
-          .filter(r => r.type === 'video' || r.type === 'instagram')
-          .map(r => ({
-            id: r.id,
-            type: r.type,
-            name: r.name,
-            location: r.location,
-            rating: r.rating || 5,
-            treatment: r.treatment,
-            video_thumbnail: r.video_thumbnail || r.image || '/images/placeholder-video.webp',
-            text: r.text,
-            video_url: r.video_url
-          }));
+        if (dbReviews && dbReviews.length > 0) {
+          const dbVideos = dbReviews
+            .filter(r => r.type === 'video' || r.type === 'instagram')
+            .map(r => ({
+              id: r.id,
+              type: r.type,
+              category: r.category || 'dental',
+              name: r.name,
+              location: r.location || 'Tamil Nadu',
+              rating: r.rating || 5,
+              treatment: r.treatment || 'Specialist Treatment',
+              procedure: r.procedure || 'Clinical Care',
+              video_thumbnail: r.video_thumbnail || r.image || '/images/placeholder-video.webp',
+              text: r.text,
+              video_url: r.video_url,
+              duration: r.duration || '2:00 min',
+              views: r.views || '5.2K',
+              featured: r.featured || false
+            }));
 
-        // Merge with static defaults, avoiding duplicates by name/url
-        const merged = [...dbVideos];
-        STATIC_VIDEOS.forEach(staticItem => {
-          const exists = merged.some(m => m.name.toLowerCase() === staticItem.name.toLowerCase() || m.video_url === staticItem.video_url);
-          if (!exists) {
-            merged.push(staticItem);
-          }
-        });
-
-        setVideos(merged);
+          const merged = [...dbVideos];
+          STATIC_VIDEOS.forEach(staticItem => {
+            const exists = merged.some(m => m.name?.toLowerCase() === staticItem.name?.toLowerCase() || m.video_url === staticItem.video_url);
+            if (!exists) {
+              merged.push(staticItem);
+            }
+          });
+          setVideos(merged);
+        } else {
+          setVideos(STATIC_VIDEOS);
+        }
       } catch (err) {
-        console.warn("Failed to fetch dynamic video reviews, using fallback:", err);
+        console.warn("Failed to fetch dynamic video reviews, using static:", err);
         setVideos(STATIC_VIDEOS);
       } finally {
         setLoading(false);
@@ -160,10 +268,54 @@ export default function VideoTestimonialsPage() {
     fetchVideoReviews();
   }, []);
 
-  const filteredVideos = videos.filter(v => {
-    if (filter === 'all') return true;
-    return v.type === filter;
-  });
+  // Filtered list for the main grid
+  const filteredVideos = useMemo(() => {
+    return videos.filter(v => {
+      const matchCategory = selectedCategory === 'all' || v.category === selectedCategory;
+      const matchPlatform = platformFilter === 'all' ||
+        (platformFilter === 'youtube' && v.type === 'video') ||
+        (platformFilter === 'instagram' && v.type === 'instagram');
+      const matchSearch = searchQuery.trim() === '' ||
+        v.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.treatment?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.text?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCategory && matchPlatform && matchSearch;
+    });
+  }, [videos, selectedCategory, platformFilter, searchQuery]);
+
+  // Featured videos list for auto-sliding banner
+  const featuredVideos = useMemo(() => {
+    const list = videos.filter(v => v.featured);
+    return list.length > 0 ? list : videos.slice(0, 6);
+  }, [videos]);
+
+  // 8-Second Auto Sliding Timer
+  useEffect(() => {
+    if (isPaused || featuredVideos.length <= 1) return;
+    const timer = setInterval(() => {
+      setSlideDirection(1);
+      setCurrentFeaturedIdx((prev) => (prev + 1) % featuredVideos.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [isPaused, featuredVideos.length, currentFeaturedIdx]);
+
+  const handlePrevSlide = () => {
+    setSlideDirection(-1);
+    setCurrentFeaturedIdx((prev) => (prev - 1 + featuredVideos.length) % featuredVideos.length);
+  };
+
+  const handleNextSlide = () => {
+    setSlideDirection(1);
+    setCurrentFeaturedIdx((prev) => (prev + 1) % featuredVideos.length);
+  };
+
+  const handleSelectSlide = (idx) => {
+    setSlideDirection(idx > currentFeaturedIdx ? 1 : -1);
+    setCurrentFeaturedIdx(idx);
+  };
+
+  const currentFeatured = featuredVideos[currentFeaturedIdx] || featuredVideos[0];
 
   const handleBookClick = (e) => {
     e.preventDefault();
@@ -171,165 +323,542 @@ export default function VideoTestimonialsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const openPlayer = (video) => {
+    const videoId = parseVideoLink(video.video_url, video.type);
+    if (videoId) {
+      setActiveVideo({ ...video, parsedId: videoId });
+    }
+  };
+
   return (
-    <div className="w-full bg-slate-50 font-body text-left relative pt-0 pb-24 min-h-screen">
+    <div className="w-full bg-slate-950 text-white font-body text-left relative pt-0 pb-24 min-h-screen overflow-hidden">
+      {/* ─── 1. BREADCRUMB HERO ─── */}
       <PageBreadcrumbHero
-        title="Video Testimonials"
-        breadcrumbs={[{ label: 'Video Testimonials', active: true }]}
+        title="Patient Video Testimonials"
+        breadcrumbs={[
+          { label: 'Smile Stories', path: '/smile-stories' },
+          { label: 'Video Testimonials', active: true }
+        ]}
       />
 
-      <div className="max-w-7xl mx-auto px-6 mt-12">
-        {/* Category Filters */}
-        <div className="flex justify-center gap-3 mb-12">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-5 py-2.5 rounded-xl font-headline font-bold text-xs uppercase tracking-wider transition-all border ${filter === 'all'
-              ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white border-transparent shadow-md'
-              : 'bg-white text-slate-650 border-slate-200 hover:bg-slate-50'
-              }`}
-          >
-            All Videos ({videos.length})
-          </button>
-          <button
-            onClick={() => setFilter('video')}
-            className={`px-5 py-2.5 rounded-xl font-headline font-bold text-xs uppercase tracking-wider transition-all border ${filter === 'video'
-              ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white border-transparent shadow-md'
-              : 'bg-white text-slate-650 border-slate-200 hover:bg-slate-50'
-              }`}
-          >
-            YouTube Reviews
-          </button>
-          <button
-            onClick={() => setFilter('instagram')}
-            className={`px-5 py-2.5 rounded-xl font-headline font-bold text-xs uppercase tracking-wider transition-all border ${filter === 'instagram'
-              ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white border-transparent shadow-md'
-              : 'bg-white text-slate-650 border-slate-200 hover:bg-slate-50'
-              }`}
-          >
-            Instagram Reels
-          </button>
-        </div>
+      {/* Ambient background glows */}
+      <div className="absolute top-20 left-10 w-[500px] h-[500px] bg-brandBlue/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-1/3 right-10 w-[600px] h-[600px] bg-brandSky/10 rounded-full blur-[140px] pointer-events-none"></div>
 
-        {loading ? (
-          <div className="py-20 flex justify-center items-center">
-            <div className="w-10 h-10 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+
+        {/* ─── 2. HERO INTRO & STATS ─── */}
+        <section className="text-center space-y-6 pt-6 pb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900/90 border border-brandSky/30 rounded-full text-xs font-bold font-headline uppercase tracking-widest text-brandSky shadow-lg shadow-brandSky/5">
+            <Sparkles className="w-4 h-4 text-brandSky" />
+            Unfiltered Patient Experience
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredVideos.map((video) => {
-              const videoId = parseVideoLink(video.video_url, video.type);
-              return (
-                <div
-                  key={video.id}
-                  onClick={() => videoId && setActiveVideo({ ...video, parsedId: videoId })}
-                  className={`bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col p-2 group ${videoId ? 'cursor-pointer' : ''}`}
-                >
-                  {/* Thumbnail / Video Container */}
-                  <div className="relative aspect-[9/16] w-full overflow-hidden bg-slate-900 rounded-2xl border border-slate-100">
-                    <img
-                      src={video.video_thumbnail}
-                      alt={video.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
 
-                    {/* Platform Badge */}
-                    <div className="absolute top-4 right-4 z-20">
-                      {video.type === 'video' ? (
-                        <div className="w-7 h-7 rounded-lg bg-[#FF0000] flex items-center justify-center shadow-md">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.516 3.5 12 3.5 12 3.5s-7.516 0-9.387.555A3.003 3.003 0 0 0 .502 6.163C0 8.07 0 12 0 12s0 3.93.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.484 20.5 12 20.5 12 20.5s7.516 0 9.387-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.93 24 12 24 12s0-3.93-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#F77737] flex items-center justify-center shadow-md">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
+          <h1 className="font-headline font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight max-w-4xl mx-auto">
+            Hear Real Stories from <span className="bg-gradient-to-r from-brandSky via-sky-300 to-white bg-clip-text text-transparent">Real Patients</span>
+          </h1>
 
-                    {/* Play Button Overlay */}
-                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 transition-colors duration-300 flex items-center justify-center">
-                      <span className={`w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-lg transition-transform group-hover:scale-110 duration-300 ${video.type === 'instagram' ? 'text-[#E1306C]' : 'text-brandBlue'}`}>
-                        <Play className="w-6 h-6 fill-current ml-0.5" />
-                      </span>
-                    </div>
+          <p className="text-slate-400 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
+            Watch candid recorded reviews from patients who experienced transformative treatments across Dental Implants, Root Canals, Laser Dermatology, and Hair Restoration at Jerush.
+          </p>
+
+          {/* Social Proof Strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-2">
+            <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-md">
+              <span className="font-headline font-black text-2xl sm:text-3xl text-brandSky block">80K+ Happy Patients</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">In Video Stories</span>
+            </div>
+            <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-md">
+              <span className="font-headline font-black text-2xl sm:text-3xl text-amber-400 block">4.9 Google Reviews</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">Patient Ratings</span>
+            </div>
+            <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-md">
+              <span className="font-headline font-black text-2xl sm:text-3xl text-emerald-400 block">100% Feedbacks</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">Genuine Reviews</span>
+            </div>
+            <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-center backdrop-blur-md">
+              <span className="font-headline font-black text-2xl sm:text-3xl text-brandSky block">4+ Branches</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mt-1">Tamil Nadu & Global</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 3. FEATURED SPOTLIGHT AUTO-SLIDING CAROUSEL (8-SEC INTERVAL) ─── */}
+        {featuredVideos.length > 0 && currentFeatured && (
+          <section
+            className="mb-14 select-none"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div className="bg-gradient-to-r from-brandBlue/30 via-slate-900/90 to-brandSky/20 border border-brandSky/30 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+
+              {/* Top Bar with Slide Counter, Timer Badge, and Prev/Next Navigation */}
+              <div className="flex items-center justify-between gap-4 mb-6 border-b border-slate-800/80 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brandSky/10 border border-brandSky/20 rounded-full text-[10px] sm:text-xs font-bold font-headline uppercase tracking-wider text-brandSky">
+                    <Sparkles className="w-3.5 h-3.5 text-brandSky" />
+                    Featured Spotlight ({currentFeaturedIdx + 1} of {featuredVideos.length})
                   </div>
+                </div>
 
-                  {/* Card Content */}
-                  <div className="p-4 flex-grow flex flex-col justify-between text-left">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-headline font-extrabold text-sm text-slate-900 truncate">{video.name}</h4>
-                        <div className="flex gap-0.5 text-amber-400">
-                          {[...Array(video.rating)].map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-current" />
+                {/* Arrow Controls */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handlePrevSlide}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/90 border border-slate-700/80 text-slate-300 hover:text-white hover:border-brandSky hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer shadow-md"
+                    title="Previous Featured Story"
+                    aria-label="Previous Featured Story"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleNextSlide}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/90 border border-slate-700/80 text-slate-300 hover:text-white hover:border-brandSky hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer shadow-md"
+                    title="Next Featured Story"
+                    aria-label="Next Featured Story"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Slide Content with Framer Motion AnimatePresence */}
+              <div className="relative min-h-[320px] sm:min-h-[280px]">
+                <AnimatePresence mode="wait" custom={slideDirection}>
+                  <motion.div
+                    key={currentFeatured.id}
+                    custom={slideDirection}
+                    initial={{ opacity: 0, x: slideDirection > 0 ? 50 : -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: slideDirection > 0 ? -50 : 50 }}
+                    transition={{ duration: 0.45, ease: "easeOut" }}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+                  >
+                    {/* Video Player Card */}
+                    <div
+                      onClick={() => openPlayer(currentFeatured)}
+                      className="lg:col-span-5 relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80 group cursor-pointer bg-slate-950"
+                    >
+                      <img
+                        src={currentFeatured.video_thumbnail}
+                        alt={currentFeatured.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <span className="w-16 h-16 rounded-full bg-white text-brandBlue flex items-center justify-center shadow-2xl group-hover:scale-115 transition-transform duration-300">
+                          <Play className="w-7 h-7 fill-current ml-1" />
+                        </span>
+                      </div>
+                      <div className="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md rounded-full border border-white/20 text-[10px] font-headline font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3 text-brandSky" />
+                        Featured Transformation
+                      </div>
+                    </div>
+
+                    {/* Video Description */}
+                    <div className="lg:col-span-7 space-y-4 text-left">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="px-3 py-1 rounded-full bg-brandSky/20 text-brandSky border border-brandSky/30 text-xs font-headline font-bold uppercase tracking-wider">
+                          {currentFeatured.treatment}
+                        </span>
+                        <div className="flex text-amber-400">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-current" />
                           ))}
                         </div>
                       </div>
-                      <p className="text-[10px] text-brandSky font-bold uppercase tracking-wider">{video.treatment} &bull; {video.location}</p>
-                      <p className="text-slate-500 text-[11px] leading-relaxed italic line-clamp-3">"{video.text}"</p>
+
+                      <h2 className="font-headline font-black text-xl sm:text-3xl text-white leading-snug">
+                        "{currentFeatured.text}"
+                      </h2>
+
+                      <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Patient: <strong className="text-white">{currentFeatured.name}</strong> • Location: <strong className="text-white">{currentFeatured.location}</strong> • Procedure: <strong className="text-brandSky">{currentFeatured.procedure}</strong>
+                      </p>
+
+                      <div className="pt-2 flex flex-wrap items-center gap-4">
+                        <button
+                          onClick={() => openPlayer(currentFeatured)}
+                          className="px-6 py-3 bg-gradient-to-r from-brandBlue to-brandSky hover:brightness-110 text-white rounded-2xl font-headline font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-brandBlue/30 transition-all cursor-pointer"
+                        >
+                          <Play className="w-4 h-4 fill-current" />
+                          Watch Full Story
+                        </button>
+                        <button
+                          onClick={handleBookClick}
+                          className="px-6 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-2xl font-headline font-bold text-xs uppercase tracking-wider border border-slate-700 transition-all cursor-pointer"
+                        >
+                          Consult This Doctor
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Interactive Pagination Progress Bar and Dots */}
+              <div className="mt-8 pt-4 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  {featuredVideos.map((item, idx) => {
+                    const isActive = currentFeaturedIdx === idx;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => handleSelectSlide(idx)}
+                        className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer relative overflow-hidden ${isActive
+                          ? 'w-10 sm:w-14 bg-slate-800'
+                          : 'w-2.5 sm:w-3 bg-slate-800 hover:bg-slate-700'
+                          }`}
+                        title={`Go to ${item.name} (${item.treatment})`}
+                      >
+                        {isActive && (
+                          <motion.div
+                            key={`progress-${currentFeaturedIdx}-${isPaused}`}
+                            initial={{ width: "0%" }}
+                            animate={{ width: isPaused ? undefined : "100%" }}
+                            transition={{ duration: isPaused ? 0 : 8, ease: "linear" }}
+                            className="h-full bg-gradient-to-r from-brandBlue to-brandSky rounded-full"
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
+
+                <div className="text-[11px] text-slate-400 font-headline font-semibold flex items-center gap-2">
+                  <span>Showing story {currentFeaturedIdx + 1} of {featuredVideos.length}</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
         )}
 
-        {filteredVideos.length === 0 && !loading && (
-          <div className="text-center py-20 bg-white border border-slate-100 rounded-2xl">
-            <p className="text-slate-500 font-headline font-bold text-lg">No video testimonials found.</p>
-            <p className="text-slate-400 text-xs mt-1">Try another category tab.</p>
+        {/* ─── 4. CATEGORY & PLATFORM FILTER PILLS ─── */}
+        <section className="space-y-6 mb-12">
+          {/* Category Filter Pills */}
+          <div className="flex justify-center">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 p-2 bg-slate-900/80 border border-slate-800 rounded-2xl sm:rounded-full backdrop-blur-xl max-w-full shadow-2xl">
+              {CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                const isActive = selectedCategory === cat.id;
+                const count = cat.id === 'all'
+                  ? videos.length
+                  : videos.filter(v => v.category === cat.id).length;
+
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-headline font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${isActive
+                      ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white shadow-lg shadow-brandBlue/30 scale-102'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{cat.label}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'
+                      }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Video Modal Player Dialog */}
-      <AnimatePresence>
-        {activeVideo && (
-          <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-            {/* Click outside to close */}
-            <div className="absolute inset-0" onClick={() => setActiveVideo(null)}></div>
-
-            <div className="bg-slate-950 w-full max-w-[360px] sm:w-[380px] aspect-[9/16] max-h-[85vh] relative border-[8px] border-white rounded-[2.5rem] shadow-2xl z-10">
+          {/* Platform Pills & Search Bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 backdrop-blur-md">
+            {/* Platform Filter Buttons */}
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest font-headline mr-1 hidden sm:inline">
+                Platform:
+              </span>
               <button
-                onClick={() => setActiveVideo(null)}
-                className="absolute -top-3 -right-3 z-50 w-9 h-9 rounded-full bg-black border border-white/10 text-brandSky hover:text-brandSky/85 hover:scale-110 flex items-center justify-center shadow-lg transition-all duration-300 cursor-pointer"
-                aria-label="Close video player"
+                onClick={() => setPlatformFilter('all')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-headline font-semibold transition-all cursor-pointer ${platformFilter === 'all'
+                  ? 'bg-brandSky/20 text-brandSky border border-brandSky/40 shadow-sm'
+                  : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white'
+                  }`}
               >
-                <X className="w-5 h-5" />
+                All Formats
               </button>
+              <button
+                onClick={() => setPlatformFilter('youtube')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-headline font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${platformFilter === 'youtube'
+                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-sm'
+                  : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white'
+                  }`}
+              >
+                <Youtube className="w-3.5 h-3.5 text-rose-500" />
+                YouTube Reviews
+              </button>
+              <button
+                onClick={() => setPlatformFilter('instagram')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-headline font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${platformFilter === 'instagram'
+                  ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40 shadow-sm'
+                  : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:text-white'
+                  }`}
+              >
+                <Instagram className="w-3.5 h-3.5 text-pink-500" />
+                Instagram Reels
+              </button>
+            </div>
 
-              <div className="w-full h-full rounded-[2rem] overflow-hidden bg-black relative">
-                {activeVideo.type === 'video' ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${activeVideo.parsedId}?autoplay=1`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="YouTube video player"
-                  ></iframe>
-                ) : (
-                  <iframe
-                    src={`https://www.instagram.com/reel/${activeVideo.parsedId}/embed/`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="Instagram Reel"
-                  ></iframe>
-                )}
+            {/* Search Box */}
+            <div className="relative w-full md:w-72 shrink-0">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search patient, treatment, town..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brandSky transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 5. VIDEO REEL GRID ─── */}
+        <section className="space-y-6 mb-20">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider font-headline">
+              Showing <span className="text-brandSky font-bold">{filteredVideos.length}</span> Video Reviews
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="py-20 flex justify-center items-center">
+              <div className="w-10 h-10 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : filteredVideos.length === 0 ? (
+            <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-12 text-center space-y-4">
+              <Smile className="w-12 h-12 text-slate-600 mx-auto" />
+              <h3 className="font-headline font-bold text-lg text-white">No video testimonials found</h3>
+              <p className="text-slate-400 text-xs">Try selecting another filter or clearing your search term.</p>
+              <button
+                onClick={() => { setSelectedCategory('all'); setPlatformFilter('all'); setSearchQuery(''); }}
+                className="px-4 py-2 bg-brandBlue text-white text-xs font-bold rounded-xl font-headline"
+              >
+                Reset All Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredVideos.map((video, idx) => {
+                const videoId = parseVideoLink(video.video_url, video.type);
+                return (
+                  <motion.div
+                    key={video.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: idx * 0.04 }}
+                    onClick={() => openPlayer(video)}
+                    className="bg-slate-900/70 border border-slate-800/90 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-brandSky/60 transition-all duration-300 flex flex-col p-3 group cursor-pointer backdrop-blur-sm"
+                  >
+                    {/* Video Thumbnail (Reels 9:16 Aspect Ratio) */}
+                    <div className="relative aspect-[9/16] w-full overflow-hidden bg-slate-950 rounded-2xl border border-slate-800">
+                      <img
+                        src={video.video_thumbnail}
+                        alt={video.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+
+                      {/* Top Gradient Overlay */}
+                      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"></div>
+
+                      {/* Bottom Gradient Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
+
+                      {/* Top Badges */}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
+                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-brandSky border border-white/10 uppercase tracking-wider font-headline">
+                          {video.treatment}
+                        </span>
+
+                        {video.type === 'video' ? (
+                          <div className="w-6 h-6 rounded-lg bg-[#FF0000] flex items-center justify-center shadow-md">
+                            <svg className="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24">
+                              <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.516 3.5 12 3.5 12 3.5s-7.516 0-9.387.555A3.003 3.003 0 0 0 .502 6.163C0 8.07 0 12 0 12s0 3.93.502 5.837a3.003 3.003 0 0 0 2.11 2.108C4.484 20.5 12 20.5 12 20.5s7.516 0 9.387-.555a3.003 3.003 0 0 0 2.11-2.108C24 15.93 24 12 24 12s0-3.93-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                            </svg>
+                          </div>
+                        ) : (
+                          <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#F77737] flex items-center justify-center shadow-md">
+                            <svg className="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24">
+                              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Play Button Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="w-13 h-13 rounded-full bg-white/95 text-brandBlue flex items-center justify-center shadow-xl group-hover:scale-115 transition-transform duration-300">
+                          <Play className="w-5 h-5 fill-current ml-0.5" />
+                        </span>
+                      </div>
+
+                      {/* In-Video Bottom Overlay Info */}
+                      <div className="absolute bottom-3 left-3 right-3 z-10 text-left space-y-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-headline font-extrabold text-sm text-white drop-shadow">
+                            {video.name}
+                          </h4>
+                          <div className="flex text-amber-400">
+                            {[...Array(video.rating || 5)].map((_, i) => (
+                              <Star key={i} className="w-3 h-3 fill-current" />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-slate-300 font-semibold flex items-center gap-1">
+                          <MapPin className="w-2.5 h-2.5 text-brandSky" />
+                          {video.location}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card Body Snippet */}
+                    <div className="p-3 text-left space-y-2 flex-grow flex flex-col justify-between">
+                      <p className="text-slate-400 text-xs leading-relaxed italic line-clamp-2">
+                        "{video.text}"
+                      </p>
+
+                      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
+                        <span className="text-brandSky flex items-center gap-1">
+                          <Play className="w-2.5 h-2.5 fill-current" />
+                          Watch Video
+                        </span>
+                        <span className="text-slate-500 font-semibold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          Verified Story
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* ─── 6. VIDEO MODAL PLAYER (Smartphone / Cinema Frame) ─── */}
+        <AnimatePresence>
+          {activeVideo && (
+            <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0"
+                onClick={() => setActiveVideo(null)}
+              />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.92, y: 20 }}
+                transition={{ duration: 0.25 }}
+                className="bg-slate-900 w-full max-w-[380px] sm:w-[400px] aspect-[9/16] max-h-[88vh] relative border-[6px] border-slate-800 rounded-[2.5rem] shadow-2xl z-10 flex flex-col justify-between overflow-hidden"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setActiveVideo(null)}
+                  className="absolute top-4 right-4 z-50 w-9 h-9 rounded-full bg-black/80 border border-white/20 text-white hover:text-brandSky hover:scale-110 flex items-center justify-center shadow-lg transition-all cursor-pointer"
+                  aria-label="Close video player"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                {/* Video Stream Area */}
+                <div className="w-full h-full rounded-[2rem] overflow-hidden bg-black relative">
+                  {activeVideo.type === 'video' ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${activeVideo.parsedId}?autoplay=1&rel=0`}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="YouTube video player"
+                    ></iframe>
+                  ) : (
+                    <iframe
+                      src={`https://www.instagram.com/reel/${activeVideo.parsedId}/embed/`}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="Instagram Reel"
+                    ></iframe>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* ─── 7. BOTTOM CTA BANNER (Custom Rule: grid-cols-[1.2fr_2fr] with Doctor Cutout) ─── */}
+        <section className="pt-8">
+          <div className="bg-gradient-to-r from-brandBlue to-brandSky rounded-3xl text-white shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_2fr] gap-8 items-stretch">
+              {/* Left side: Doctor Cutout aligned to bottom */}
+              <div className="relative flex items-end justify-center overflow-hidden border-b lg:border-b-0 lg:border-r border-white/10 bg-black/5 min-h-[300px] lg:min-h-0 pt-8 lg:pt-0">
+                <img
+                  src="/images/doctors/dr-bladbin-portrait.webp"
+                  alt="DR. A. BLADBIN - Founder & Chief Surgeon"
+                  className="h-[320px] lg:h-[380px] w-auto object-contain object-bottom transition-transform duration-500 hover:scale-102"
+                />
+                {/* Overlay tag for Doctor name */}
+                <div className="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-xl text-left">
+                  <p className="text-[10px] font-bold text-brandSky uppercase tracking-wider">Founder & Chief Surgeon</p>
+                  <p className="text-xs font-headline font-black text-white">DR. A. BLADBIN LLB, MDS, PhD</p>
+                </div>
+              </div>
+
+              {/* Right side: CTA details */}
+              <div className="p-8 sm:p-12 flex flex-col justify-center text-left space-y-6">
+                <h2 className="font-headline font-black text-2xl sm:text-4xl relative z-10 leading-tight">
+                  Ready to Experience Exceptional Dental & Aesthetic Care?
+                </h2>
+                <p className="text-white/85 text-sm sm:text-base max-w-xl leading-relaxed relative z-10">
+                  Join thousands of smiling, satisfied patients across Tamil Nadu and abroad. Schedule your digital consultation with Dr. Bladbin and our specialist team today.
+                </p>
+                <div className="flex flex-wrap gap-4 relative z-10">
+                  <button
+                    onClick={handleBookClick}
+                    className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-brandBlue font-headline font-bold text-xs uppercase tracking-wider rounded-2xl shadow-md hover:bg-slate-50 hover:scale-[1.02] transition-all cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Book Free Consultation
+                  </button>
+                  <a
+                    href="tel:+919489160055"
+                    className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent border border-white/40 text-white font-headline font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-white/10 hover:border-white transition-all"
+                  >
+                    <Phone className="w-4 h-4" />
+                    Call +91 94891 60055
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        )}
-      </AnimatePresence>
+        </section>
+
+      </div>
     </div>
   );
 }

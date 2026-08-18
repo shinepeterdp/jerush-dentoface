@@ -6,7 +6,7 @@ import { marqueeService } from '../../services/marqueeService';
 export default function AdminMarquee() {
   const [items, setItems] = useState([]);
   const [settings, setSettings] = useState({
-    enabled: true,
+    enabled: false,
     speed: 'normal',
     pauseOnHover: true,
     theme: 'dark-gradient',

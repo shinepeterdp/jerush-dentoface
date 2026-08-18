@@ -1,5 +1,5 @@
 export const defaultMarqueeSettings = {
-  enabled: true,
+  enabled: false,
   speed: 'normal', // 'slow' (40s), 'normal' (25s), 'fast' (15s)
   pauseOnHover: true,
   theme: 'dark-gradient', // 'dark-gradient', 'brand-blue', 'sky-glow', 'emerald-notice', 'amber-alert'

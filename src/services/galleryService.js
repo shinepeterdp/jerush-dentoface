@@ -93,24 +93,54 @@ const allDrBladbinBirthdayPhotos = [
 
 const mockEvents = [
   {
-    id: 1,
+    id: 8,
     title: 'Jerushaligne and Advanced Technology Units Opening Celebration 2k26',
     description: 'Moments from the grand opening celebration of Jerushaligne Clear Aligners Manufacturing and our new Advanced Technology Units. A memorable day celebrating innovation, advanced patient care and our growing clinical family.',
-    event_date: 'May 31, 2026',
+    event_date: 'May 30, 2026',
     cover_image: '/images/events/jerushaligne-opening-event/jerushaligne-manufacturing-units-open.webp',
     status: 'published',
     photo_count: allJerushaligneOpeningPhotos.length,
     photos: allJerushaligneOpeningPhotos
   },
   {
-    id: 2,
-    title: "Dr. Bladbin's Birthday Celebration",
+    id: 7,
+    title: "Bladbin's Birthday Celebration",
     description: 'Jerush Dentofacial & Cosmetic Laser Centre, Thuckalay, proudly celebrated the birthday of our Founder and Chairman, Dr. A. Bladbin, with great enthusiasm and gratitude. The occasion brought together our doctors, staff, well-wishers and patients to honour his inspiring leadership, dedication to excellence and unwavering commitment to delivering quality healthcare.',
     event_date: 'February 28, 2026',
     cover_image: '/images/events/dr-bladbin-birthday/bladbin-birthday-cover.webp',
     status: 'published',
     photo_count: allDrBladbinBirthdayPhotos.length,
     photos: allDrBladbinBirthdayPhotos
+  },
+  {
+    id: 10,
+    title: 'ESTRELLA 25 – The Star of Bethlehem',
+    description: "Every Christmas is a reminder of God's greatest gift to humanity, the birth of Jesus Christ, the Prince of Peace. ESTRELLA '25 was a beautiful celebration organized by the Jerush Family, bringing together staff, families, friends and well-wishers to share the joy of the season in an atmosphere filled with love, gratitude and fellowship.",
+    event_date: 'December 24, 2025',
+    cover_image: '/uploads/events/event_cover_1786083161_821.webp',
+    status: 'published',
+    photo_count: 0,
+    photos: []
+  },
+  {
+    id: 11,
+    title: 'ONAM VIBEZ 2K25',
+    description: 'Jerush Hospital, Thuckalay, celebrated the spirit of Onam with joy, togetherness and vibrant festive energy on September 5, 2025. A colourful Pookalam added to the festive atmosphere, with our team coming together to create a beautiful traditional design.',
+    event_date: 'September 05, 2025',
+    cover_image: '/uploads/events/event_cover_1786351106_284.webp',
+    status: 'published',
+    photo_count: 22,
+    photos: []
+  },
+  {
+    id: 9,
+    title: 'CRESCITA -23rd Jerush Anniversary',
+    description: 'Celebrating 23 remarkable years of clinical excellence, growth and trust, Jerush Dentofacial & Cosmetic Laser Centre, Thuckalay, hosted "CRESCITA 2025" to mark its milestone anniversary.',
+    event_date: 'September 05, 2025',
+    cover_image: '/uploads/events/event_cover_1785909896_371.webp',
+    status: 'published',
+    photo_count: 49,
+    photos: []
   }
 ];
 
@@ -162,14 +192,14 @@ const getLocalEvents = () => {
   if (local !== null) {
     try {
       const parsed = JSON.parse(local);
-      if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed.map(sanitizeEvent);
       }
     } catch (e) {
-      return [];
+      return mockEvents.map(sanitizeEvent);
     }
   }
-  return [];
+  return mockEvents.map(sanitizeEvent);
 };
 
 const saveLocalEvents = (list) => {
@@ -184,8 +214,10 @@ export const galleryService = {
   getEvents: async () => {
     try {
       const data = await apiClient.get('/gallery_events.php');
-      if (Array.isArray(data)) {
-        return data.map(ev => sanitizeEvent(ev));
+      if (Array.isArray(data) && data.length > 0) {
+        const sanitized = data.map(ev => sanitizeEvent(ev));
+        saveLocalEvents(sanitized);
+        return sanitized;
       }
       return getLocalEvents();
     } catch (e) {

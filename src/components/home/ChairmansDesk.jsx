@@ -1,5 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+function CurvedUnderline({ className = "", delay = 0.2, id = "curve" }) {
+  return (
+    <div className={`relative ${className}`}>
+      <svg
+        className="w-full h-2.5 sm:h-3 overflow-visible"
+        viewBox="0 0 160 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id={`blueCurveGrad-${id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#2853A4" />
+            <stop offset="65%" stopColor="#1E97D4" />
+            <stop offset="100%" stopColor="#38BDF8" />
+          </linearGradient>
+          <filter id={`blueCurveGlow-${id}`} x="-10%" y="-30%" width="120%" height="160%">
+            <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#1E97D4" floodOpacity="0.4" />
+          </filter>
+        </defs>
+        <motion.path
+          d="M 3 8 C 40 2, 100 11, 156 4"
+          stroke={`url(#blueCurveGrad-${id})`}
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          filter={`url(#blueCurveGlow-${id})`}
+          initial={{ pathLength: 0, opacity: 0 }}
+          whileInView={{ pathLength: 1, opacity: 1 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <motion.circle
+          cx="156"
+          cy="4"
+          r="2.2"
+          fill="#38BDF8"
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.25, delay: delay + 0.75, ease: "backOut" }}
+        />
+      </svg>
+    </div>
+  );
+}
 
 export default function ChairmansDesk() {
   const navigate = useNavigate();
@@ -70,12 +116,18 @@ export default function ChairmansDesk() {
 
           {/* Right: Content Column */}
           <div className="lg:col-span-7 space-y-6">
-            <span className="text-xs font-bold text-brandSky uppercase tracking-widest leading-none block">
-              Founder & Chairman: Jerush Groups
-            </span>
-            <h3 className="font-headline font-extrabold text-3xl sm:text-4xl text-primary">
-              DR. A. BLADBIN
-            </h3>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-brandSky uppercase tracking-widest leading-none block">
+                Founder & Chairman: Jerush Groups
+              </span>
+              <div className="inline-block relative">
+                <h3 className="font-headline font-extrabold text-3xl sm:text-4xl text-primary">
+                  DR. A. BLADBIN
+                </h3>
+                <CurvedUnderline className="mt-1 max-w-[125px] sm:max-w-[150px]" delay={0.25} id="bladbin" />
+              </div>
+            </div>
+
             <p className="text-brandBlue font-semibold text-xs sm:text-sm font-headline tracking-wide uppercase">
               MBBS(Ukraine), LLB, MDS(OMFS), PHD(Srilanka), PHD(Hons), FAM(Ger), MCHT(Ger), MCDC(Ger)
             </p>
@@ -138,12 +190,18 @@ export default function ChairmansDesk() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-12">
           {/* Left: Content Column (Desktop order 1, Mobile order 2) */}
           <div className="lg:col-span-7 space-y-6 order-2 lg:order-1">
-            <span className="text-xs font-bold text-brandSky uppercase tracking-widest leading-none block">
-              Director & Co-Founder
-            </span>
-            <h3 className="font-headline font-extrabold text-3xl sm:text-4xl text-primary">
-              DR. C. BINILA BLADBIN
-            </h3>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-brandSky uppercase tracking-widest leading-none block">
+                Director & Co-Founder
+              </span>
+              <div className="inline-block relative">
+                <h3 className="font-headline font-extrabold text-3xl sm:text-4xl text-primary">
+                  DR. C. BINILA BLADBIN
+                </h3>
+                <CurvedUnderline className="mt-1 max-w-[140px] sm:max-w-[165px]" delay={0.25} id="binila" />
+              </div>
+            </div>
+
             <p className="text-brandBlue font-semibold text-xs sm:text-sm font-headline tracking-wide uppercase">
               MDS (Oral & Maxillofacial Surgery)
             </p>

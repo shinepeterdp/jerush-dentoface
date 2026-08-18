@@ -12,7 +12,6 @@ import FractionalCo2LaserPage from '../pages/FractionalCo2LaserPage.jsx';
 import GfcHairPage from '../pages/GfcHairPage.jsx';
 import CryoSculptingPage from '../pages/CryoSculptingPage.jsx';
 import HairTransplantPage from '../pages/HairTransplantPage.jsx';
-import GalleryPage from '../pages/GalleryPage.jsx';
 import EventsPage from '../pages/EventsPage.jsx';
 import BlogsPage from '../pages/BlogsPage.jsx';
 import BlogDetailsPage from '../pages/BlogDetailsPage.jsx';
@@ -28,6 +27,10 @@ import DentalImplantsPage from '../pages/DentalImplantsPage.jsx';
 import RootCanalTreatmentPage from '../pages/RootCanalTreatmentPage.jsx';
 import TeamPage from '../pages/TeamPage.jsx';
 
+import CrownsBridgesPage from '../pages/CrownsBridgesPage.jsx';
+import SmileStoriesPage from '../pages/SmileStoriesPage.jsx';
+import DentalCampsPage from '../pages/DentalCampsPage.jsx';
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -38,6 +41,10 @@ export default function AppRoutes() {
       <Route path="/about/ethical-healthcare" element={<EthicalHealthcarePage />} />
       <Route path="/doctors" element={<DoctorsPage />} />
       <Route path="/treatments" element={<TreatmentsPage />} />
+      <Route path="/treatments/dental-crowns-bridges" element={<CrownsBridgesPage />} />
+      <Route path="/treatments/jacket-crowns" element={<CrownsBridgesPage />} />
+      <Route path="/treatments/fixed-partial-denture" element={<CrownsBridgesPage />} />
+      <Route path="/dental-crowns-bridges" element={<CrownsBridgesPage />} />
       <Route path="/treatments/:id" element={<TreatmentDetailPage />} />
       <Route path="/dental-implants" element={<DentalImplantsPage />} />
       <Route path="/dental-treatments/dental-implants-in-chennai" element={<Navigate to="/dental-implants" replace />} />
@@ -53,7 +60,12 @@ export default function AppRoutes() {
       <Route path="/leadership/dr-c-binila-bladbin-managing-director" element={<DrBinilaPage />} />
       <Route path="/leadership/dr-a-prabin-chief-executive-officer" element={<DrPrabinPage />} />
 
-      <Route path="/gallery" element={<GalleryPage />} />
+      <Route path="/smile-stories" element={<SmileStoriesPage />} />
+      <Route path="/smile-transformations" element={<SmileStoriesPage />} />
+      <Route path="/before-after" element={<Navigate to="/smile-stories" replace />} />
+      <Route path="/gallery" element={<Navigate to="/smile-stories" replace />} />
+      <Route path="/camps" element={<DentalCampsPage />} />
+      <Route path="/dental-camps" element={<DentalCampsPage />} />
       <Route path="/events" element={<EventsPage />} />
       <Route path="/video-testimonials" element={<VideoTestimonialsPage />} />
       <Route path="/blog" element={<BlogsPage />} />
@@ -68,3 +80,4 @@ export default function AppRoutes() {
     </Routes>
   );
 }
+

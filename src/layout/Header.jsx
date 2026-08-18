@@ -865,10 +865,10 @@ export default function Header() {
                   </div>
                 </li>
 
-                {/* Gallery Mega Menu Trigger */}
+                {/* Smile Stories Mega Menu Trigger */}
                 <li className={`jerush-nav-item jerush-mega-trigger ${activeHoverMenu === 'gallery' ? 'open' : ''}`} onMouseEnter={() => setActiveHoverMenu('gallery')}>
-                  <Link to="/gallery" onClick={handleLinkClick} className="jerush-nav-link font-headline">
-                    Gallery <span className="jerush-arrow"></span>
+                  <Link to="/smile-stories" onClick={handleLinkClick} className="jerush-nav-link font-headline">
+                    Smile Stories <span className="jerush-arrow"></span>
                   </Link>
 
                   {/* Gallery Mega Menu Panel */}
@@ -887,7 +887,7 @@ export default function Header() {
                           className={`jerush-category-tab ${galleryActiveTab === 'gallery-media' ? 'active' : ''}`}
                           onMouseEnter={() => setGalleryActiveTab('gallery-media')}
                         >
-                          Media & Tours
+                          Media & Events
                           <span className="jerush-tab-arrow"></span>
                         </button>
                         <button
@@ -908,15 +908,15 @@ export default function Header() {
                             <div className="jerush-grid-column">
                               <h5>Dentistry</h5>
                               <ul>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Smile Transformations</Link></li>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Cosmetic Resurfacing</Link></li>
+                                <li><Link to="/smile-stories?category=dental" onClick={handleLinkClick}>Smile Transformations</Link></li>
                               </ul>
                             </div>
                             <div className="jerush-grid-column">
                               <h5>Aesthetics</h5>
                               <ul>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Hair Regrowth Results</Link></li>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Body Contouring Cases</Link></li>
+                                <li><Link to="/smile-stories?category=skin" onClick={handleLinkClick}>Cosmetic Resurfacing</Link></li>
+                                <li><Link to="/smile-stories?category=hair" onClick={handleLinkClick}>Hair Regrowth Results</Link></li>
+                                <li><Link to="/smile-stories?category=body" onClick={handleLinkClick}>Body Contouring Cases</Link></li>
                               </ul>
                             </div>
                           </div>
@@ -927,17 +927,17 @@ export default function Header() {
                           <h4 className="jerush-pane-title">Tours & Outreach</h4>
                           <div className="jerush-grid-3cols">
                             <div className="jerush-grid-column">
-                              <h5>Facility Tours</h5>
+                              <h5>Hospital Tours</h5>
                               <ul>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Clinic Video Tour</Link></li>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Virtual Tour (3D)</Link></li>
+                                <li><Link to="/video-testimonials" onClick={handleLinkClick}>Clinic Video Tour</Link></li>
+                                <li><Link to="/events" onClick={handleLinkClick}>Hospital Facilities</Link></li>
                               </ul>
                             </div>
                             <div className="jerush-grid-column">
                               <h5>Community</h5>
                               <ul>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Dental Health Camps</Link></li>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Wellness Seminars</Link></li>
+                                <li><Link to="/camps" onClick={handleLinkClick}>Dental Health Camps</Link></li>
+                                <li><Link to="/events" onClick={handleLinkClick}>Wellness Seminars</Link></li>
                               </ul>
                             </div>
                           </div>
@@ -951,7 +951,7 @@ export default function Header() {
                               <h5>Direct Reviews</h5>
                               <ul>
                                 <li><Link to="/video-testimonials" onClick={handleLinkClick}>Video Testimonials</Link></li>
-                                <li><Link to="/gallery" onClick={handleLinkClick}>Photo Stories</Link></li>
+                                <li><Link to="/smile-stories" onClick={handleLinkClick}>Photo Stories</Link></li>
                               </ul>
                             </div>
                             <div className="jerush-grid-column">
@@ -1060,8 +1060,8 @@ export default function Header() {
                 )}
               </div>
 
-              <Link to="/contact" onClick={handleLinkClick} className="jerush-cta-btn-premium">
-                <span className="cta-icon-wrapper">
+              <Link to="/contact" onClick={handleLinkClick} className="jerush-cta-btn-premium whitespace-nowrap shrink-0">
+                <span className="cta-icon-wrapper shrink-0">
                   <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -1069,7 +1069,7 @@ export default function Header() {
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
                 </span>
-                <span className="cta-text-wrapper">Book Appointment</span>
+                <span className="cta-text-wrapper whitespace-nowrap">Book Appointment</span>
               </Link>
 
               {/* Mobile Menu Toggle Button (Hamburger) */}
@@ -1331,10 +1331,10 @@ export default function Header() {
               </ul>
             </li>
 
-            {/* Gallery Accordion */}
+            {/* Smile Stories Accordion */}
             <li className="jerush-mobile-item has-accordion">
               <button className={`jerush-mobile-accordion-toggle ${activeAccordion === 'gallery' ? 'active' : ''}`} onClick={() => handleAccordionToggle('gallery')}>
-                Gallery <span className="jerush-accordion-icon"></span>
+                Smile Stories <span className="jerush-accordion-icon"></span>
               </button>
               <ul className={`jerush-mobile-submenu ${activeAccordion === 'gallery' ? 'open' : ''}`}>
                 <li className="jerush-mobile-subaccordion">
@@ -1342,21 +1342,21 @@ export default function Header() {
                     Before & After Results <span className="jerush-accordion-icon"></span>
                   </button>
                   <ul className={`jerush-mobile-subsubmenu ${activeSubAccordion === 'gallery-results' ? 'open' : ''}`}>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Smile Transformations</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Cosmetic Resurfacing</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Hair Regrowth Results</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Body Contouring Cases</Link></li>
+                    <li><Link to="/smile-stories?category=dental" onClick={handleLinkClick}>Smile Transformations</Link></li>
+                    <li><Link to="/smile-stories?category=skin" onClick={handleLinkClick}>Cosmetic Resurfacing</Link></li>
+                    <li><Link to="/smile-stories?category=hair" onClick={handleLinkClick}>Hair Regrowth Results</Link></li>
+                    <li><Link to="/smile-stories?category=body" onClick={handleLinkClick}>Body Contouring Cases</Link></li>
                   </ul>
                 </li>
                 <li className="jerush-mobile-subaccordion">
                   <button className={`jerush-mobile-subaccordion-toggle ${activeSubAccordion === 'gallery-tours' ? 'active' : ''}`} onClick={() => handleSubAccordionToggle('gallery-tours')}>
-                    Tours & Outreach <span className="jerush-accordion-icon"></span>
+                    Hospital & Outreach <span className="jerush-accordion-icon"></span>
                   </button>
                   <ul className={`jerush-mobile-subsubmenu ${activeSubAccordion === 'gallery-tours' ? 'open' : ''}`}>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Clinic Video Tour</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Virtual Tour (3D)</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Dental Health Camps</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Wellness Seminars</Link></li>
+                    <li><Link to="/video-testimonials" onClick={handleLinkClick}>Clinic Video Tour</Link></li>
+                    <li><Link to="/events" onClick={handleLinkClick}>Hospital Facilities</Link></li>
+                    <li><Link to="/camps" onClick={handleLinkClick}>Dental Health Camps</Link></li>
+                    <li><Link to="/events" onClick={handleLinkClick}>Wellness Seminars</Link></li>
                   </ul>
                 </li>
                 <li className="jerush-mobile-subaccordion">
@@ -1365,7 +1365,7 @@ export default function Header() {
                   </button>
                   <ul className={`jerush-mobile-subsubmenu ${activeSubAccordion === 'gallery-testimonials' ? 'open' : ''}`}>
                     <li><Link to="/video-testimonials" onClick={handleLinkClick}>Video Testimonials</Link></li>
-                    <li><Link to="/gallery" onClick={handleLinkClick}>Photo Stories</Link></li>
+                    <li><Link to="/smile-stories" onClick={handleLinkClick}>Photo Stories</Link></li>
                     <li><Link to="/reviews" onClick={handleLinkClick}>Google Reviews Feed</Link></li>
                   </ul>
                 </li>

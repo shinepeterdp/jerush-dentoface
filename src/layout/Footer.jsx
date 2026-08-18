@@ -106,7 +106,7 @@ export default function Footer() {
               <li><Link to="/" onClick={handleLinkClick} className="hover:text-brandSky transition-colors">Home</Link></li>
               <li><a href="#" onClick={(e) => handleScrollToSection('jerush-about-welcome', e)} className="hover:text-brandSky transition-colors">Our Legacy</a></li>
               <li><a href="#" onClick={(e) => handleScrollToSection('jerush-doctors', e)} className="hover:text-brandSky transition-colors">Meet Our Specialists</a></li>
-              <li><Link to="/gallery" onClick={handleLinkClick} className="hover:text-brandSky transition-colors">Smile Transformations</Link></li>
+              <li><Link to="/smile-stories?category=dental" onClick={handleLinkClick} className="hover:text-brandSky transition-colors">Smile Transformations</Link></li>
               <li><Link to="/contact" onClick={handleLinkClick} className="hover:text-brandSky transition-colors">Contact & Locations</Link></li>
             </ul>
           </div>
@@ -264,14 +264,14 @@ export default function Footer() {
         </Link>
 
         {/* Item 4: Smile Stories */}
-        <Link to="/gallery" onClick={handleLinkClick} className="flex flex-col items-center justify-center text-center w-full py-1 text-slate-400 hover:text-brandSky transition-all duration-200 group">
+        <Link to="/smile-stories" onClick={handleLinkClick} className="flex flex-col items-center justify-center text-center w-full py-1 text-slate-400 hover:text-brandSky transition-all duration-200 group">
           <svg className="w-[15px] h-[15px] mb-0.5 group-hover:scale-110 transition-all duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="8.5" stroke="#fbbf24" stroke-width="1.8" fill="#fbbf24" fillOpacity="0.15" />
+            <circle cx="12" cy="12" r="8.5" stroke="#fbbf24" strokeWidth="1.8" fill="#fbbf24" fillOpacity="0.15" />
             <circle cx="9" cy="10.5" r="1" fill="#475569" />
             <circle cx="15" cy="10.5" r="1" fill="#475569" />
             <circle cx="7" cy="12.5" r="1.5" fill="#f43f5e" fillOpacity="0.5" />
-            <circle cx="17" cy="12.5" r="1.5" fill="#f43f5e" fill-opacity="0.5" />
-            <path d="M9.5 13.5C10.2 15.2 13.8 15.2 14.5 13.5" stroke="#475569" stroke-width="1.5" strokeLinecap="round" />
+            <circle cx="17" cy="12.5" r="1.5" fill="#f43f5e" fillOpacity="0.5" />
+            <path d="M9.5 13.5C10.2 15.2 13.8 15.2 14.5 13.5" stroke="#475569" strokeWidth="1.5" strokeLinecap="round" />
             <path d="M19 4L19.4 4.8L20.2 5L19.4 5.2L19 6L18.6 5.2L17.8 5L18.6 4.8L19 4Z" fill="#38bdf8" />
           </svg>
           <span className="text-[9px] font-bold uppercase tracking-wider font-headline mt-0.5">Stories</span>
