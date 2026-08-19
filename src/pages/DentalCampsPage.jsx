@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Calendar, Clock, MapPin, Sparkles, Search,
@@ -19,6 +19,33 @@ export default function DentalCampsPage() {
   // Selected Camp Photo Gallery Lightbox State
   const [selectedCampForGallery, setSelectedCampForGallery] = useState(null);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+
+  // Category Bar Scroll State & Controls
+  const categoryScrollRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkCategoryScroll = () => {
+    if (categoryScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = categoryScrollRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkCategoryScroll();
+    window.addEventListener('resize', checkCategoryScroll);
+    return () => window.removeEventListener('resize', checkCategoryScroll);
+  }, [camps]);
+
+  const handleCategoryScroll = (direction) => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -280 : 280;
+      categoryScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
 
   const loadCamps = async () => {
     try {
@@ -142,45 +169,89 @@ export default function DentalCampsPage() {
           ))}
         </div>
 
-        {/* ─── Category Filter Navigation Bar ─── */}
-        <div className="space-y-3 pt-2">
-          <div className="flex items-center justify-between">
+        {/* ─── Redesigned Category Filter Navigation Bar ─── */}
+        <div className="space-y-2.5 pt-2">
+          <div className="flex items-center justify-between px-1">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-headline flex items-center gap-1.5">
               <Filter className="w-3.5 h-3.5 text-brandBlue" />
-              Select Camp Category:
+              Select Camp Category
+            </span>
+            <span className="text-xs text-slate-500 font-semibold hidden sm:inline-flex items-center gap-1.5 bg-blue-50/80 px-2.5 py-0.5 rounded-full border border-blue-100/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-brandBlue animate-pulse"></span>
+              Showing {filteredCamps.length} camp{filteredCamps.length === 1 ? '' : 's'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none">
-            {categoriesList.map((cat) => {
-              const Icon = cat.icon;
-              const isActive = activeCategory === cat.id;
-              const count = getCategoryCount(cat.id);
+          <div className="relative group/nav bg-white/90 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 border border-blue-100 shadow-sm shadow-blue-950/5">
+            {/* Left Scroll Chevron Button */}
+            {canScrollLeft && (
+              <button
+                onClick={() => handleCategoryScroll('left')}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-xl bg-white text-brandBlue hover:bg-brandBlue hover:text-white border border-blue-200 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+              </button>
+            )}
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-headline font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2.5 cursor-pointer border ${
-                    isActive
-                      ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white shadow-md shadow-brandBlue/20 border-transparent scale-102'
-                      : 'bg-white text-slate-700 hover:text-brandBlue hover:bg-blue-50/70 border-blue-100 shadow-xs'
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-brandSky'}`} />
-                  <span>{cat.label}</span>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
-                      isActive ? 'bg-white/25 text-white' : 'bg-blue-50 text-brandBlue'
+            {/* Left Edge Gradient Fade */}
+            {canScrollLeft && (
+              <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-white via-white/90 to-transparent z-10 pointer-events-none rounded-l-2xl" />
+            )}
+
+            {/* Scrollable Category Pills Container */}
+            <div
+              ref={categoryScrollRef}
+              onScroll={checkCategoryScroll}
+              className="flex items-center gap-2.5 overflow-x-auto scrollbar-none py-0.5 px-1 scroll-smooth"
+            >
+              {categoriesList.map((cat) => {
+                const Icon = cat.icon;
+                const isActive = activeCategory === cat.id;
+                const count = getCategoryCount(cat.id);
+
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2.5 cursor-pointer border ${
+                      isActive
+                        ? 'bg-gradient-to-r from-brandBlue to-brandSky text-white shadow-md shadow-brandBlue/25 border-transparent scale-[1.02]'
+                        : 'bg-white text-slate-700 hover:text-brandBlue hover:bg-blue-50/80 border-slate-200/70 hover:border-blue-200 shadow-xs'
                     }`}
                   >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+                    <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-brandSky'}`} />
+                    <span>{cat.label}</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-colors ${
+                        isActive ? 'bg-white/25 text-white' : 'bg-blue-50 text-brandBlue border border-blue-100'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right Edge Gradient Fade */}
+            {canScrollRight && (
+              <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white via-white/90 to-transparent z-10 pointer-events-none rounded-r-2xl" />
+            )}
+
+            {/* Right Scroll Chevron Button */}
+            {canScrollRight && (
+              <button
+                onClick={() => handleCategoryScroll('right')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-xl bg-white text-brandBlue hover:bg-brandBlue hover:text-white border border-blue-200 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+              </button>
+            )}
           </div>
         </div>
+
 
         {loading ? (
           <div className="py-24 flex justify-center items-center">

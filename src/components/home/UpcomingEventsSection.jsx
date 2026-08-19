@@ -8,7 +8,7 @@ import {
 import { upcomingEvents as defaultEvents } from '../../data/upcomingEvents';
 import { galleryService } from '../../services/galleryService';
 
-// Clean, minimalistic luxury countdown widget
+// Premium luxury countdown widget with live pulse & responsive flip-card styling
 function CountdownTimer({ targetIsoDate }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -34,27 +34,98 @@ function CountdownTimer({ targetIsoDate }) {
     return () => clearInterval(calculateTime);
   }, [targetIsoDate]);
 
+  const units = [
+    { label: 'DAYS', value: timeLeft.days },
+    { label: 'HOURS', value: timeLeft.hours },
+    { label: 'MINS', value: timeLeft.minutes },
+    { label: 'SECS', value: timeLeft.seconds }
+  ];
+
   return (
-    <div className="grid grid-cols-4 gap-2 sm:gap-3 max-w-xs sm:max-w-sm">
-      {[
-        { label: 'Days', value: timeLeft.days },
-        { label: 'Hours', value: timeLeft.hours },
-        { label: 'Mins', value: timeLeft.minutes },
-        { label: 'Secs', value: timeLeft.seconds }
-      ].map((item, i) => (
-        <div
-          key={i}
-          className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 text-center shadow-sm hover:border-brandSky/40 transition-all duration-300 group"
-        >
-          <span className="block font-headline font-extrabold text-base sm:text-xl text-slate-900 tracking-tight">
-            {String(item.value).padStart(2, '0')}
+    <div className="w-full max-w-full sm:max-w-md bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border border-blue-800/60 rounded-2xl p-2.5 sm:p-4 shadow-xl shadow-blue-950/25">
+      {/* Live Badge & Section Title Header */}
+      <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3 pb-1.5 sm:pb-2 border-b border-white/10">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-cyan-400"></span>
           </span>
-          <span className="block text-[8px] sm:text-[9.5px] font-extrabold uppercase tracking-widest text-slate-400 mt-0.5">
-            {item.label}
+          <span className="text-[10px] sm:text-[11px] font-headline font-extrabold uppercase tracking-wider sm:tracking-widest text-cyan-300">
+            Live Event Countdown
           </span>
         </div>
-      ))}
+        <Clock className="w-3.5 h-3.5 text-cyan-400/70 shrink-0" />
+      </div>
+
+      {/* 4 Digit Unit Cards Container */}
+      <div className="flex items-start justify-between gap-1 sm:gap-2.5">
+        {units.map((item, i) => (
+          <React.Fragment key={i}>
+            <div className="flex-1 min-w-0 group relative flex flex-col items-center">
+              {/* Digit Box */}
+              <div className="w-full h-12 sm:h-15 rounded-xl bg-gradient-to-b from-[#111c30] via-[#0f284e] to-[#0b172a] border border-cyan-500/30 shadow-inner shadow-black/60 flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:border-cyan-400 group-hover:scale-[1.02]">
+                {/* Top Glossy Highlight */}
+                <div className="absolute top-0 inset-x-0 h-1/2 bg-white/[0.07] border-b border-black/40 pointer-events-none" />
+
+                {/* Flip Divider Line */}
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-slate-950 shadow-[0_1px_0_rgba(255,255,255,0.1)] z-10" />
+
+                {/* Digit Display */}
+                <span className="relative z-10 font-headline font-black text-xl sm:text-2xl lg:text-[26px] text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  {String(item.value).padStart(2, '0')}
+                </span>
+              </div>
+
+              {/* Unit Tag Below Box */}
+              <span className="mt-1.5 text-[8.5px] sm:text-[10px] font-headline font-black tracking-wider sm:tracking-widest text-cyan-300 uppercase px-1 sm:px-1.5 py-0.5 bg-cyan-950/90 rounded-md border border-cyan-500/30 w-full text-center truncate shadow-sm">
+                {item.label}
+              </span>
+            </div>
+
+            {/* Glowing Colon Separator */}
+            {i < units.length - 1 && (
+              <div className="flex flex-col gap-1 items-center justify-center h-12 sm:h-15 text-cyan-400/80 font-bold animate-pulse shrink-0 px-0.5">
+                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.8)]" />
+                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.8)]" />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
+  );
+}
+
+// Typewriter Writing Effect Component for Title & Tagline
+function TypewriterText({ text, speed = 25, className = "", cursorColor = "bg-brandBlue" }) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    setDisplayedText("");
+    setIsTyping(true);
+    let index = 0;
+
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.substring(0, index + 1));
+        index++;
+      } else {
+        setIsTyping(false);
+        clearInterval(timer);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return (
+    <span className="inline">
+      <span className={className}>{displayedText}</span>
+      {isTyping && (
+        <span className={`inline-block w-[3px] h-[0.8em] ${cursorColor} ml-1 animate-pulse align-middle rounded-full shadow-xs`} />
+      )}
+    </span>
   );
 }
 
@@ -177,8 +248,8 @@ export default function UpcomingEventsSection() {
           </div>
 
           {/* Right: Clean Segmented Tab Switcher & Arrow Controls */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-inner backdrop-blur-md overflow-x-auto max-w-full">
+          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <div className="flex items-center gap-1 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/80 shadow-inner backdrop-blur-md overflow-x-auto scrollbar-none w-full sm:w-auto max-w-full">
               {eventsList.map((item, idx) => {
                 const isActive = activeIndex === idx;
                 const shortTitles = ['Onam 2026', '24th Anniversary', 'Jerushaligne Units', "Founder's Day"];
@@ -187,7 +258,7 @@ export default function UpcomingEventsSection() {
                   <button
                     key={item.id}
                     onClick={() => handleTabClick(idx)}
-                    className={`px-3.5 py-2 xl:px-4 xl:py-2.5 rounded-xl text-xs xl:text-sm font-headline font-bold transition-all duration-300 cursor-pointer whitespace-nowrap ${isActive
+                    className={`px-3.5 py-2 xl:px-4 xl:py-2.5 rounded-xl text-xs xl:text-sm font-headline font-bold transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 ${isActive
                         ? 'bg-white text-brandBlue shadow-md shadow-slate-300/60 scale-[1.02]'
                         : 'text-slate-500 hover:text-slate-900 hover:bg-white/60'
                       }`}
@@ -221,7 +292,7 @@ export default function UpcomingEventsSection() {
         </div>
 
         {/* AUTHENTIC PHYSICAL OPEN BOOK CONTAINER (JERUSH SIGNATURE GRADIENT HARDCOVER BORDER) */}
-        <div className="bg-gradient-to-r from-brandBlue via-brandSky to-brandBlue p-2.5 sm:p-3.5 xl:p-4 2xl:p-5 rounded-[38px] xl:rounded-[44px] 2xl:rounded-[50px] shadow-[0_25px_70px_rgba(40,83,164,0.25)] relative group overflow-hidden border border-brandSky/40">
+        <div className="bg-gradient-to-r from-brandBlue via-brandSky to-brandBlue p-2 sm:p-3.5 xl:p-4 2xl:p-5 rounded-[26px] sm:rounded-[38px] xl:rounded-[44px] 2xl:rounded-[50px] shadow-[0_25px_70px_rgba(40,83,164,0.25)] relative group overflow-hidden border border-brandSky/40">
 
           {/* HANGING GOLD SILK BOOKMARK RIBBON FROM TOP CENTER */}
           <div className="hidden lg:flex flex-col items-center absolute top-0 left-[52%] -translate-x-1/2 z-40 w-5 xl:w-6 pointer-events-none">
@@ -231,13 +302,13 @@ export default function UpcomingEventsSection() {
           </div>
 
           {/* INNER TWO-PAGE OPEN BOOK SPREAD */}
-          <div className="bg-[#FCFDFE] rounded-[30px] xl:rounded-[36px] 2xl:rounded-[40px] overflow-hidden flex flex-col lg:flex-row items-stretch relative border border-slate-200/90 shadow-inner">
+          <div className="bg-[#FCFDFE] rounded-[20px] sm:rounded-[30px] xl:rounded-[36px] 2xl:rounded-[40px] overflow-hidden flex flex-col lg:flex-row items-stretch relative border border-slate-200/90 shadow-inner">
 
             {/* CENTER BOOK SPINE CREASE DIVIDER */}
             <div className="hidden lg:block absolute left-[52%] top-0 bottom-0 w-6 xl:w-8 -translate-x-1/2 bg-gradient-to-r from-slate-300/40 via-slate-400/60 to-slate-300/40 pointer-events-none z-30 shadow-[inset_0_0_15px_rgba(0,0,0,0.08)] border-x border-slate-300/50" />
 
             {/* LEFT BOOK PAGE: STATIC JOURNAL CONTENT PAGE */}
-            <div className="flex-grow flex items-center p-6 sm:p-8 lg:p-10 xl:p-14 2xl:p-16 bg-[#FCFDFE] lg:w-[52%] shrink-0 relative z-10">
+            <div className="flex-grow flex items-center p-4 sm:p-8 lg:p-10 xl:p-14 2xl:p-16 bg-[#FCFDFE] lg:w-[52%] shrink-0 relative z-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentEvent.id}
@@ -248,9 +319,9 @@ export default function UpcomingEventsSection() {
                   className="w-full max-w-[620px] xl:max-w-[700px] 2xl:max-w-[800px] mx-auto lg:mx-0 space-y-5 xl:space-y-6 text-left"
                 >
                   {/* Category Pill & Page Number Indicator */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10.5px] xl:text-xs font-headline font-bold uppercase tracking-wider ${currentEvent.status === 'completed'
+                  <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
+                    <div className="flex flex-wrap items-center gap-2 max-w-full">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3 rounded-xl text-[10px] sm:text-[10.5px] xl:text-xs font-headline font-bold uppercase tracking-wider shrink-0 ${currentEvent.status === 'completed'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/70'
                           : currentEvent.id.includes('onam')
                             ? 'bg-amber-50 text-amber-700 border border-amber-200/70'
@@ -259,24 +330,30 @@ export default function UpcomingEventsSection() {
                         {currentEvent.status === 'completed' ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <Sparkles className="w-3 h-3" />}
                         {currentEvent.badge}
                       </span>
-                      <span className="text-[11px] xl:text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      <span className="text-[10px] sm:text-[11px] xl:text-xs font-bold text-slate-400 uppercase tracking-widest truncate">
                         {currentEvent.category}
                       </span>
                     </div>
 
                     {/* Book Page Indicator */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 border border-slate-200 text-[10.5px] xl:text-xs font-headline font-bold text-slate-600 shadow-inner">
-                      <BookOpen className="w-3 h-3 text-brandSky" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3 rounded-full bg-slate-100/90 border border-slate-200 text-[10px] sm:text-[10.5px] xl:text-xs font-headline font-bold text-slate-600 shadow-inner shrink-0 ml-auto sm:ml-0">
+                      <BookOpen className="w-3 h-3 text-brandSky shrink-0" />
                       <span>Journal Page 0{activeIndex + 1} / 0{eventsList.length}</span>
                     </div>
                   </div>
 
-                  {/* Event Title & Tagline */}
+
+                  {/* Event Title with Gradient & Typewriter Writing Effect (Slower Pace) */}
                   <div>
-                    <h3 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-[40px] 2xl:text-[46px] text-slate-900 leading-tight tracking-tight">
-                      {currentEvent.title}
+                    <h3 className="font-headline font-extrabold text-2xl sm:text-3xl lg:text-4xl xl:text-[40px] 2xl:text-[46px] leading-tight tracking-tight">
+                      <TypewriterText
+                        text={currentEvent.title}
+                        speed={50}
+                        className="bg-gradient-to-r from-slate-950 via-brandBlue to-[#1E97D4] bg-clip-text text-transparent"
+                        cursorColor="bg-brandBlue"
+                      />
                     </h3>
-                    <p className="text-brandSky font-headline font-bold text-xs sm:text-sm xl:text-base mt-1.5">
+                    <p className="text-brandSky font-headline font-bold text-xs sm:text-sm xl:text-base mt-2 tracking-wide">
                       {currentEvent.tagline}
                     </p>
                   </div>
@@ -303,12 +380,7 @@ export default function UpcomingEventsSection() {
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <span className="text-[10px] xl:text-xs font-headline font-extrabold uppercase tracking-wider text-slate-400 block mb-2 flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-brandSky" /> Countdown To Event
-                        </span>
-                        <CountdownTimer targetIsoDate={currentEvent.isoDate} />
-                      </>
+                      <CountdownTimer targetIsoDate={currentEvent.isoDate} />
                     )}
                   </div>
 
