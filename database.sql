@@ -282,3 +282,31 @@ CREATE TABLE IF NOT EXISTS `clinic_highlights` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+-- 11. SPECIALITY HEALTH & COMMUNITY OUTREACH CAMPS TABLE
+CREATE TABLE IF NOT EXISTS `camps` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `title` VARCHAR(255) NOT NULL,
+  `tagline` VARCHAR(255) DEFAULT '',
+  `category` VARCHAR(50) NOT NULL DEFAULT 'dental',
+  `camp_type` VARCHAR(100) NOT NULL DEFAULT 'Dental Camp',
+  `status` VARCHAR(50) NOT NULL DEFAULT 'upcoming',
+  `date` VARCHAR(100) NOT NULL,
+  `time` VARCHAR(100) NOT NULL,
+  `location` VARCHAR(255) NOT NULL,
+  `lead_doctors` VARCHAR(255) DEFAULT '',
+  `target_beneficiaries` VARCHAR(255) DEFAULT '',
+  `cover_image` VARCHAR(500) DEFAULT '',
+  `gallery_images` TEXT DEFAULT NULL,
+  `services_provided` TEXT DEFAULT NULL,
+  `description` TEXT DEFAULT NULL,
+  `organizer` VARCHAR(255) DEFAULT 'Jerush Medical Foundation',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `camps` (`title`, `tagline`, `category`, `camp_type`, `status`, `date`, `time`, `location`, `lead_doctors`, `target_beneficiaries`, `cover_image`, `gallery_images`, `services_provided`, `description`, `organizer`) VALUES
+('Mega Community Health & Smile Camp', 'Comprehensive oral wellness, preventive cancer screening & treatment vouchers', 'dental', 'Dental Camp', 'upcoming', 'October 24, 2026', '9:00 AM – 4:00 PM', 'Jerush Community Hall, Near Main Bus Stand, Thuckalay', 'Dr. C. Binila Asir, Dr. A. Bladbin, Dr. S. Rajmohan', 'Families, Seniors, School Students & General Public', '/images/events/medical-camp/free-community-medical-camp-group-photo.webp', '[\"/images/events/medical-camp/free-community-medical-camp-group-photo.webp\",\"/images/events/medical-camp/free-community-medical-camp-banner.webp\",\"/images/events/medical-camp/free-community-medical-camp-lead-doctor-group-photo.webp\"]', '[\"Full-Mouth Ultrasonic Scaling & Plaque Assessment\",\"Oral Cancer Screening with Intraoral Camera\",\"Free Denture Evaluation for Seniors\",\"Fluoride Varnish for Kids\"]', 'Comprehensive free community screening camp organized by Jerush Medical Foundation providing diagnostics, oral hygiene kits, and treatment discounts.', 'Jerush Medical Foundation'),
+('Jerush 3D Clear Aligner Smile Transformation Drive', 'Experience high-precision digital intraoral scans and instant AI smile previews', 'aligner', 'Aligner Camp', 'upcoming', 'November 12, 2026', '10:00 AM – 5:00 PM', 'Jerush Super-Speciality Dental Hospital, Thuckalay', 'Dr. C. Binila Asir (Orthodontist & Aligner Specialist)', 'Teens, College Students, Working Professionals', '/images/events/jerushaligne-opening-event/dr-c-binila-asir-inauguration-jerush-aligner.webp', '[\"/images/events/jerushaligne-opening-event/dr-c-binila-asir-inauguration-jerush-aligner.webp\",\"/images/events/jerushaligne-opening-event/jerush-clear-aligner-inauguration-ceremony.webp\",\"/images/events/jerushaligne-opening-event/doctor-team-jerushaligner-inauguration.webp\"]', '[\"High-Speed 3D Digital Intraoral Smile Scan\",\"AI Before-and-After Treatment Simulation\",\"Customized Aligner Treatment Plan Voucher\"]', 'Exclusive clear aligner camp with live 3D intraoral digital scanning demonstration and custom aligner package concessions.', 'Jerush Orthodontic & Cosmetic Wing');
+
+
+

@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { path: '/admin/marquee', label: 'Marquee News', icon: Radio },
   { path: '/admin/events', label: 'Upcoming Events', icon: Calendar },
-  { path: '/admin/camps', label: 'Dental Camps', icon: HeartHandshake },
+  { path: '/admin/camps', label: 'Camps', icon: HeartHandshake },
   { path: '/admin/doctors', label: 'Doctors', icon: Users },
   { path: '/admin/treatments', label: 'Treatments', icon: Stethoscope },
   { path: '/admin/blog', label: 'Blog', icon: FileText },

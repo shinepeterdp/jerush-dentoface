@@ -20,18 +20,19 @@ export default function AdminCamps() {
   const [formState, setFormState] = useState({
     title: '',
     tagline: '',
-    category: 'upcoming',
-    campType: 'Rural & Community Outreach',
+    category: 'dental',
+    campType: 'Dental Camp',
     status: 'upcoming',
     date: '',
     time: '9:00 AM – 4:30 PM',
     location: '',
-    targetBeneficiaries: 'General Public & School Students',
+    targetBeneficiaries: 'General Public & Families',
     expectedBeneficiaries: '500+ Patients',
     leadDoctors: 'Dr. A. Bladbin, MDS, PhD & Dr. C. Binila Asir, MDS',
     teamSize: '6 Doctors, 4 Nurses, 3 Hygienists',
-    coverImage: '/images/events/jerushaligne-opening-event/jerushaligne-manufacturing-units-open.webp',
-    servicesProvidedText: 'Free Oral Cancer & Leukoplakia Screening\nDigital Intraoral Camera Checkups\nFree Fluoride Treatment for Kids\nEmergency Pain Relief Extractions\nFree Toothbrush & Paste Kit Distribution',
+    coverImage: '/images/events/medical-camp/free-community-medical-camp-group-photo.webp',
+    galleryImagesText: '/images/events/medical-camp/free-community-medical-camp-group-photo.webp\n/images/events/medical-camp/doctors-providing-health-consultation-medical-camp.webp',
+    servicesProvidedText: 'Free Oral Cancer & Leukoplakia Screening\nDigital Intraoral Camera Caries Checkups\nFree Pediatric Fluoride Treatment\nEmergency Pain Relief Extractions\nComplimentary Toothbrush & Fluoride Paste Kit',
     description: '',
     organizer: 'Jerush Medical Foundation',
     contactNumber: '+91 94891 60055',
@@ -73,8 +74,8 @@ export default function AdminCamps() {
     setFormState({
       title: '',
       tagline: '',
-      category: 'upcoming',
-      campType: 'Rural & Community Outreach',
+      category: 'dental',
+      campType: 'Dental Camp',
       status: 'upcoming',
       date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       time: '9:00 AM – 4:30 PM',
@@ -83,7 +84,8 @@ export default function AdminCamps() {
       expectedBeneficiaries: '500+ Patients',
       leadDoctors: 'Dr. A. Bladbin, MDS, PhD & Dr. C. Binila Asir, MDS',
       teamSize: '6 Doctors, 4 Nurses',
-      coverImage: '/images/events/jerushaligne-opening-event/jerushaligne-manufacturing-units-open.webp',
+      coverImage: '/images/events/medical-camp/free-community-medical-camp-group-photo.webp',
+      galleryImagesText: '/images/events/medical-camp/free-community-medical-camp-group-photo.webp\n/images/events/medical-camp/doctors-providing-health-consultation-medical-camp.webp',
       servicesProvidedText: 'Free Oral Cancer Screening\nDigital Caries & Gum Diagnosis\nFree Fluoride Treatment for Kids\nTooth Extraction for Emergency Pain\nFree Dental Care Kit Distribution',
       description: '',
       organizer: 'Jerush Medical Foundation',
@@ -98,8 +100,8 @@ export default function AdminCamps() {
     setFormState({
       title: camp.title || '',
       tagline: camp.tagline || '',
-      category: camp.category || 'upcoming',
-      campType: camp.campType || 'Rural & Community Outreach',
+      category: camp.category || 'dental',
+      campType: camp.campType || 'Dental Camp',
       status: camp.status || 'upcoming',
       date: camp.date || '',
       time: camp.time || '9:00 AM – 4:30 PM',
@@ -108,7 +110,8 @@ export default function AdminCamps() {
       expectedBeneficiaries: camp.expectedBeneficiaries || '500+ Patients',
       leadDoctors: camp.leadDoctors || '',
       teamSize: camp.teamSize || '',
-      coverImage: camp.coverImage || '/images/events/jerushaligne-opening-event/jerushaligne-manufacturing-units-open.webp',
+      coverImage: camp.coverImage || '/images/events/medical-camp/free-community-medical-camp-group-photo.webp',
+      galleryImagesText: (camp.galleryImages || [camp.coverImage]).filter(Boolean).join('\n'),
       servicesProvidedText: (camp.servicesProvided || []).join('\n'),
       description: camp.description || '',
       organizer: camp.organizer || 'Jerush Medical Foundation',
@@ -127,11 +130,18 @@ export default function AdminCamps() {
       .map(s => s.trim())
       .filter(Boolean);
 
+    const galleryList = formState.galleryImagesText
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean);
+
     const payload = {
       ...formState,
-      servicesProvided: servicesList
+      servicesProvided: servicesList,
+      galleryImages: galleryList.length > 0 ? galleryList : [formState.coverImage]
     };
     delete payload.servicesProvidedText;
+    delete payload.galleryImagesText;
 
     try {
       if (editingCamp) {
@@ -210,10 +220,10 @@ export default function AdminCamps() {
             Social Outreach Control
           </div>
           <h1 className="font-headline font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white">
-            Dental & Healthcare Camps
+            Camps
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
-            Manage upcoming public outreach camps, school dental drives, and review community camp hosting requests.
+            Manage upcoming speciality health camps, photos, and outreach drives.
           </p>
         </div>
 
@@ -549,17 +559,28 @@ export default function AdminCamps() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 font-headline">
-                    Category Filter
+                    Speciality Category
                   </label>
                   <select
                     value={formState.category}
-                    onChange={(e) => setFormState({ ...formState, category: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      let typeLabel = 'Dental Camp';
+                      if (val === 'aligner') typeLabel = 'Aligner Camp';
+                      if (val === 'skin') typeLabel = 'Skin Camp';
+                      if (val === 'hair') typeLabel = 'Hair Camp';
+                      if (val === 'fat-reduction') typeLabel = 'Body Fat Reduction Camp';
+                      if (val === 'social') typeLabel = 'Social & Rural Outreach';
+                      setFormState({ ...formState, category: val, campType: typeLabel });
+                    }}
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
                   >
-                    <option value="upcoming">Upcoming</option>
-                    <option value="rural">Rural & Village</option>
-                    <option value="school">School Smile Bright</option>
-                    <option value="specialist">Specialist Screening</option>
+                    <option value="dental">Dental Camp</option>
+                    <option value="aligner">Aligner Camp</option>
+                    <option value="skin">Skin & Laser Camp</option>
+                    <option value="hair">Hair & Scalp Camp</option>
+                    <option value="fat-reduction">Body Fat Reduction Camp</option>
+                    <option value="social">Social & Rural Outreach</option>
                   </select>
                 </div>
 
@@ -572,9 +593,9 @@ export default function AdminCamps() {
                     onChange={(e) => setFormState({ ...formState, status: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
                   >
-                    <option value="upcoming">Upcoming</option>
+                    <option value="upcoming">Upcoming (Registration Open)</option>
                     <option value="ongoing">Ongoing</option>
-                    <option value="completed">Completed</option>
+                    <option value="completed">Completed (Impact Archive)</option>
                   </select>
                 </div>
 
@@ -669,6 +690,19 @@ export default function AdminCamps() {
                   onChange={(e) => setFormState({ ...formState, coverImage: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm focus:outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 font-headline">
+                  Photo Gallery URLs (One image URL per line for the Camp Lightbox)
+                </label>
+                <textarea
+                  rows={3}
+                  value={formState.galleryImagesText}
+                  onChange={(e) => setFormState({ ...formState, galleryImagesText: e.target.value })}
+                  placeholder="/images/events/medical-camp/photo1.webp&#10;/images/events/medical-camp/photo2.webp"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm focus:outline-none font-mono text-xs"
+                ></textarea>
               </div>
 
               <div>

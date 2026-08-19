@@ -29,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Database Connection Parameters
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'u845778900_jerush_dental');
-define('DB_USER', 'u845778900_jerush');
-define('DB_PASS', 'Jerush@123');
+// Database Connection Parameters (Configurable via Environment Variables or Defaults)
+defined('DB_HOST') or define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+defined('DB_NAME') or define('DB_NAME', getenv('DB_NAME') ?: 'u845778900_jerush_dental');
+defined('DB_USER') or define('DB_USER', getenv('DB_USER') ?: 'u845778900_jerush');
+defined('DB_PASS') or define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : 'Jerush@123');
 
 function getDB() {
     static $db = null;

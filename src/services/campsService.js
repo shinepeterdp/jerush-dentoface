@@ -1,7 +1,8 @@
+import { apiClient } from './api';
 import { defaultCamps, defaultCampInquiries, CAMP_STATS, CAMP_SERVICES, CAMP_CATEGORIES } from '../data/campsData';
 
-const STORAGE_KEY_CAMPS = 'jerush_dental_camps_v1';
-const STORAGE_KEY_INQUIRIES = 'jerush_camp_inquiries_v1';
+const STORAGE_KEY_CAMPS = 'jerush_dental_camps_v2';
+const STORAGE_KEY_INQUIRIES = 'jerush_camp_inquiries_v2';
 export const CAMPS_UPDATE_EVENT = 'jerush_camps_updated';
 
 export const notifyCampsUpdate = () => {
@@ -72,40 +73,79 @@ export const campsService = {
   getStats: () => CAMP_STATS,
 
   getCamps: async () => {
-    return getLocalCamps();
+    try {
+      const data = await apiClient.get('/camps.php');
+      if (Array.isArray(data) && data.length > 0) {
+        saveLocalCamps(data);
+        return data;
+      }
+      return getLocalCamps();
+    } catch (e) {
+      console.warn("API /camps.php failed, falling back to local data:", e);
+      return getLocalCamps();
+    }
   },
 
   getCampById: async (id) => {
-    const camps = getLocalCamps();
-    return camps.find(c => c.id === id) || null;
+    try {
+      const data = await apiClient.get(`/camps.php?id=${id}`);
+      if (data && data.id) return data;
+      const camps = getLocalCamps();
+      return camps.find(c => String(c.id) === String(id)) || null;
+    } catch (e) {
+      const camps = getLocalCamps();
+      return camps.find(c => String(c.id) === String(id)) || null;
+    }
   },
 
   createCamp: async (campData) => {
-    const camps = getLocalCamps();
-    const newCamp = {
-      ...campData,
-      id: campData.id || `camp-${Date.now()}`,
-      registeredCount: 0,
-      createdAt: new Date().toISOString()
-    };
-    const updated = [newCamp, ...camps];
-    saveLocalCamps(updated);
-    return newCamp;
+    try {
+      const res = await apiClient.post('/camps.php', campData);
+      const newCamp = {
+        ...campData,
+        id: res && res.id ? res.id : `camp-${Date.now()}`,
+        createdAt: new Date().toISOString()
+      };
+      const camps = getLocalCamps();
+      saveLocalCamps([newCamp, ...camps]);
+      return newCamp;
+    } catch (e) {
+      console.warn("API createCamp failed, saving locally:", e);
+      const camps = getLocalCamps();
+      const newCamp = {
+        ...campData,
+        id: campData.id || `camp-${Date.now()}`,
+        createdAt: new Date().toISOString()
+      };
+      saveLocalCamps([newCamp, ...camps]);
+      return newCamp;
+    }
   },
 
   updateCamp: async (id, updatedFields) => {
+    try {
+      await apiClient.put(`/camps.php?id=${id}`, updatedFields);
+    } catch (e) {
+      console.warn("API updateCamp failed, updating locally:", e);
+    }
     const camps = getLocalCamps();
-    const index = camps.findIndex(c => c.id === id);
-    if (index === -1) throw new Error("Camp not found");
-
-    camps[index] = { ...camps[index], ...updatedFields, updatedAt: new Date().toISOString() };
-    saveLocalCamps(camps);
-    return camps[index];
+    const index = camps.findIndex(c => String(c.id) === String(id));
+    if (index !== -1) {
+      camps[index] = { ...camps[index], ...updatedFields, updatedAt: new Date().toISOString() };
+      saveLocalCamps(camps);
+      return camps[index];
+    }
+    return updatedFields;
   },
 
   deleteCamp: async (id) => {
+    try {
+      await apiClient.delete(`/camps.php?id=${id}`);
+    } catch (e) {
+      console.warn("API deleteCamp failed, deleting locally:", e);
+    }
     const camps = getLocalCamps();
-    const filtered = camps.filter(c => c.id !== id);
+    const filtered = camps.filter(c => String(c.id) !== String(id));
     saveLocalCamps(filtered);
     return true;
   },
