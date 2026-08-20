@@ -48,6 +48,7 @@ const MATERIALS = [
   {
     name: 'Monolithic Zirconia',
     badge: 'Maximum Strength',
+    img: '/images/treatments/crowns-bridges/Monolithic-zirconia.webp',
     desc: 'Delivers maximum mechanical strength for molars subject to heavy biting forces.',
     features: ['1200+ MPa mechanical strength', 'Ideal for heavy biting forces', 'Metal-free bio-compatibility', 'Long-term durability'],
     popularFor: 'Molars & Heavy Biting Restorations'
@@ -55,6 +56,7 @@ const MATERIALS = [
   {
     name: 'E-Max (Lithium Disilicate)',
     badge: 'Superior Aesthetics',
+    img: '/images/treatments/crowns-bridges/e-max-lithium-disilicate.webp',
     desc: 'Premium all-ceramic choice offering superior translucency and unmatched aesthetic beauty for front teeth.',
     features: ['Superior enamel translucency', 'Unmatched aesthetic beauty', 'High edge strength', 'Stain-resistant ceramic finish'],
     popularFor: 'Front Teeth & Cosmetic Restorations'
@@ -62,6 +64,7 @@ const MATERIALS = [
   {
     name: 'Layered Zirconia',
     badge: 'Hybrid Excellence',
+    img: '/images/treatments/crowns-bridges/layered-zirconia.webp',
     desc: 'Combines the high structural strength of a Zirconia core with a natural, tooth-colored porcelain exterior.',
     features: ['High structural Zirconia core', 'Natural porcelain exterior', 'Lifelike depth & translucency', 'Ideal for visible smile zones'],
     popularFor: 'Anterior Teeth & Complex Bridges'
@@ -188,6 +191,10 @@ const BRIDGE_INDICATIONS = [
   {
     title: 'Facial Sagging & Jaw Stress',
     desc: 'Facial sagging or jaw stress caused by long-standing tooth loss.'
+  },
+  {
+    title: 'Adjacent Teeth Drifting & Misalignment',
+    desc: 'Preventing neighboring natural teeth from shifting or tilting into empty spaces.'
   }
 ];
 
@@ -535,66 +542,80 @@ export default function CrownsBridgesPage() {
               />
             </motion.div>
           </div>
+        </div>
+      </section>
 
-          {/* Advanced Materials Offered */}
-          <div className="space-y-8 pt-6">
-            <div className="text-center space-y-2">
-              <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Prosthodontic Materials</span>
-              <h3 className="font-headline font-black text-2xl sm:text-3xl text-slate-900">
-                <span className="bg-gradient-to-r from-brandBlue via-brandSky to-blue-600 bg-clip-text text-transparent">
-                  Advanced Materials Offered
-                </span>
-              </h3>
-              <p className="text-slate-500 text-sm max-w-xl mx-auto">We use precision CAD/CAM materials tailored to functional and aesthetic requirements.</p>
-            </div>
+      {/* ─── Advanced Materials Offered Section (Alternating bg-slate-50/70) ─── */}
+      <section className="bg-slate-50/70 py-20 px-6 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="text-center space-y-2">
+            <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Prosthodontic Materials</span>
+            <h3 className="font-headline font-black text-2xl sm:text-4xl text-slate-900">
+              <span className="bg-gradient-to-r from-brandBlue via-brandSky to-blue-600 bg-clip-text text-transparent">
+                Advanced Materials Offered
+              </span>
+            </h3>
+            <p className="text-slate-500 text-sm max-w-xl mx-auto">We use precision CAD/CAM materials tailored to functional and aesthetic requirements.</p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {MATERIALS.map((mat, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.1 }}
-                  className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-left space-y-6 group hover:border-brandSky"
-                >
-                  <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {MATERIALS.map((mat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-left space-y-6 group hover:border-brandSky"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-brandSky/10 text-brandBlue border border-brandSky/20 uppercase font-headline inline-block">
                       {mat.badge}
                     </span>
-                    <h4 className="font-headline font-black text-xl text-slate-900">
-                      {mat.name}
-                    </h4>
-                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                      {mat.desc}
-                    </p>
-
-                    <div className="pt-2 space-y-2 border-t border-slate-100">
-                      {mat.features.map((feat, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
-                          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
-                    </div>
                   </div>
 
-                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Recommended For</span>
-                    <span className="text-xs font-headline font-bold text-brandBlue mt-0.5 block">
-                      {mat.popularFor}
-                    </span>
+                  {/* Material Visual Image */}
+                  <div className="w-full h-[200px] sm:h-[220px] rounded-2xl border border-slate-200/80 overflow-hidden bg-slate-100 shadow-sm transition-all group-hover:border-brandSky/40">
+                    <img
+                      src={mat.img}
+                      alt={mat.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
-                </motion.div>
-              ))}
-            </div>
+
+                  <h4 className="font-headline font-black text-xl text-slate-900 pt-1">
+                    {mat.name}
+                  </h4>
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                    {mat.desc}
+                  </p>
+
+                  <div className="pt-2 space-y-2 border-t border-slate-100">
+                    {mat.features.map((feat, fIdx) => (
+                      <div key={fIdx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
+                        <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Recommended For</span>
+                  <span className="text-xs font-headline font-bold text-brandBlue mt-0.5 block">
+                    {mat.popularFor}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ─── Benefits Section (Uncropped Images) ─── */}
-      <section id="benefits" className="max-w-7xl mx-auto px-6 py-20 border-t border-slate-100 bg-slate-50/50">
-        <div className="space-y-12">
+      <section id="benefits" className="w-full bg-white py-20 px-6 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Clinical Advantages</span>
             <h2 className="font-headline font-black text-2xl sm:text-4xl text-slate-900">
@@ -636,8 +657,8 @@ export default function CrownsBridgesPage() {
       </section>
 
       {/* ─── REAL PATIENT TRANSFORMATIONS (SEPARATE BEFORE & AFTER DESIGN) ─── */}
-      <section id="transformations" className="max-w-7xl mx-auto px-6 py-20 border-t border-slate-100 bg-white">
-        <div className="space-y-14">
+      <section id="transformations" className="w-full bg-slate-50/70 py-20 px-6 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto space-y-14">
           <div className="text-center space-y-3">
             <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Verified Patient Transformations</span>
             <h2 className="font-headline font-black text-2xl sm:text-4xl text-slate-900">
@@ -720,8 +741,8 @@ export default function CrownsBridgesPage() {
         </div>
       </section>
 
-      {/* ─── Symptoms & Indications Section ─── */}
-      <section id="symptoms" className="bg-slate-50/50 py-20 px-6 border-t border-slate-100">
+      {/* ─── Symptoms & Indications Section (bg-white) ─── */}
+      <section id="symptoms" className="w-full bg-white py-20 px-6 border-t border-slate-100">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center space-y-3">
             <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Symptom & Need Checker</span>
@@ -735,66 +756,88 @@ export default function CrownsBridgesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
             {/* Crowns Indications Card */}
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-8 space-y-6 hover:shadow-md transition-all">
-              <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-                <div className="w-10 h-10 rounded-xl bg-brandBlue text-white flex items-center justify-center font-headline font-black">
-                  1
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-brandSky uppercase tracking-wider">Single Tooth Treatment</span>
-                  <h3 className="font-headline font-black text-xl text-slate-900">Indications for Dental Crowns</h3>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {CROWN_INDICATIONS.map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-200/70 shadow-sm">
-                    <div className="w-6 h-6 rounded-full bg-blue-50 border border-blue-200 text-brandBlue flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                      ✓
-                    </div>
-                    <div>
-                      <h4 className="font-headline font-extrabold text-sm text-slate-900">{item.title}</h4>
-                      <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
-                    </div>
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 hover:shadow-xl hover:border-brandSky/50 transition-all duration-300 flex flex-col justify-between group">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brandBlue to-brandSky text-white flex items-center justify-center font-headline font-black text-base shadow-md shrink-0">
+                    1
                   </div>
-                ))}
+                  <div>
+                    <span className="text-[10px] font-bold text-brandSky uppercase tracking-widest block">Single Tooth Protection</span>
+                    <h3 className="font-headline font-black text-xl text-slate-900">Indications for Dental Crowns</h3>
+                  </div>
+                </div>
+
+                {/* Indication Visual Diagram */}
+                <div className="w-full aspect-[16/10.5] rounded-2xl border border-slate-200/80 overflow-hidden bg-white shadow-sm flex items-center justify-center transition-all duration-300 group-hover:border-brandSky/40">
+                  <img
+                    src="/images/treatments/crowns-bridges/dental-crown-indication.webp"
+                    alt="Indications for Dental Crowns"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  {CROWN_INDICATIONS.map((item, idx) => (
+                    <div key={idx} className="flex gap-3.5 items-start bg-slate-50/90 hover:bg-blue-50/40 p-4 rounded-2xl border border-slate-200/70 transition-all">
+                      <div className="w-6 h-6 rounded-full bg-brandBlue/10 text-brandBlue border border-brandBlue/20 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                        <Check className="w-3.5 h-3.5 text-brandBlue" />
+                      </div>
+                      <div>
+                        <h4 className="font-headline font-black text-sm text-slate-900">{item.title}</h4>
+                        <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Bridges Indications Card */}
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-8 space-y-6 hover:shadow-md transition-all">
-              <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-                <div className="w-10 h-10 rounded-xl bg-brandSky text-white flex items-center justify-center font-headline font-black">
-                  2
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-brandSky uppercase tracking-wider">Missing Teeth Restoration</span>
-                  <h3 className="font-headline font-black text-xl text-slate-900">Indications for Dental Bridges</h3>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {BRIDGE_INDICATIONS.map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-200/70 shadow-sm">
-                    <div className="w-6 h-6 rounded-full bg-sky-50 border border-sky-200 text-brandSky flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                      ✓
-                    </div>
-                    <div>
-                      <h4 className="font-headline font-extrabold text-sm text-slate-900">{item.title}</h4>
-                      <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
-                    </div>
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 hover:shadow-xl hover:border-brandSky/50 transition-all duration-300 flex flex-col justify-between group">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3.5 border-b border-slate-100 pb-5">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brandSky to-blue-600 text-white flex items-center justify-center font-headline font-black text-base shadow-md shrink-0">
+                    2
                   </div>
-                ))}
+                  <div>
+                    <span className="text-[10px] font-bold text-brandSky uppercase tracking-widest block">Missing Teeth Restoration</span>
+                    <h3 className="font-headline font-black text-xl text-slate-900">Indications for Dental Bridges</h3>
+                  </div>
+                </div>
+
+                {/* Indication Visual Diagram */}
+                <div className="w-full aspect-[16/10.5] rounded-2xl border border-slate-200/80 overflow-hidden bg-white shadow-sm flex items-center justify-center transition-all duration-300 group-hover:border-brandSky/40">
+                  <img
+                    src="/images/treatments/crowns-bridges/dental-bridge-indication.webp"
+                    alt="Indications for Dental Bridges"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  {BRIDGE_INDICATIONS.map((item, idx) => (
+                    <div key={idx} className="flex gap-3.5 items-start bg-slate-50/90 hover:bg-blue-50/40 p-4 rounded-2xl border border-slate-200/70 transition-all">
+                      <div className="w-6 h-6 rounded-full bg-brandSky/15 text-brandBlue border border-brandSky/30 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                        <Check className="w-3.5 h-3.5 text-brandBlue" />
+                      </div>
+                      <div>
+                        <h4 className="font-headline font-black text-sm text-slate-900">{item.title}</h4>
+                        <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Procedure Section (Redesigned Clean Layout) ─── */}
-      <section id="procedure" className="bg-white border-t border-slate-100 py-20 px-6">
+      {/* ─── Procedure Section (bg-slate-50/70) ─── */}
+      <section id="procedure" className="w-full bg-slate-50/70 border-t border-slate-100 py-20 px-6">
         <div className="max-w-7xl mx-auto space-y-14">
           <div className="text-center space-y-3">
             <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">CAD/CAM Restorative Process</span>
@@ -817,11 +860,11 @@ export default function CrownsBridgesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="bg-slate-50 border border-slate-200/90 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:border-brandSky transition-all duration-300 flex flex-col justify-between group"
+                className="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:border-brandSky transition-all duration-300 flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   {/* Step Image */}
-                  <div className="w-full h-[180px] bg-white rounded-2xl overflow-hidden border border-slate-100 p-2 flex items-center justify-center">
+                  <div className="w-full h-[180px] bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 p-2 flex items-center justify-center">
                     <img
                       src={step.img}
                       alt={step.title}
@@ -853,8 +896,8 @@ export default function CrownsBridgesPage() {
         </div>
       </section>
 
-      {/* ─── Competitive Advantage Section (Why Choose Jerush) ─── */}
-      <section id="advantage" className="bg-slate-50 py-20 px-6 border-t border-slate-100">
+      {/* ─── Competitive Advantage Section (bg-white) ─── */}
+      <section id="advantage" className="w-full bg-white py-20 px-6 border-t border-slate-100">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-brandSky/8 px-3.5 py-1.5 rounded-full border border-brandSky/15">Competitive Edge</span>
@@ -866,7 +909,7 @@ export default function CrownsBridgesPage() {
             <p className="text-slate-500 text-sm max-w-2xl mx-auto">Compare how our advanced CAD/CAM digital workflows outperform conventional dental treatments.</p>
           </div>
 
-          <div className="overflow-x-auto bg-white rounded-3xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+          <div className="overflow-x-auto bg-slate-50/60 rounded-3xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
             <table className="w-full text-left border-collapse min-w-[650px]">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-900 font-headline font-black text-sm">
@@ -882,7 +925,7 @@ export default function CrownsBridgesPage() {
               </thead>
               <tbody className="divide-y divide-slate-200/70 text-xs sm:text-sm">
                 {COMPARISON_ITEMS.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                  <tr key={idx} className="hover:bg-white transition-colors">
                     <td className="py-4 px-4 font-headline font-bold text-slate-900">
                       {item.feature}
                     </td>
@@ -906,61 +949,64 @@ export default function CrownsBridgesPage() {
         </div>
       </section>
 
-      {/* ─── Dental Tourism Support Section ─── */}
-      <section id="tourism" className="max-w-7xl mx-auto px-6 py-20 border-t border-slate-100">
-        <div className="bg-gradient-to-br from-slate-900 via-brandBlue to-[#1b4393] text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
-          <div className="relative z-10 space-y-8">
-            <div className="text-center space-y-3 max-w-2xl mx-auto">
-              <span className="text-xs font-bold text-brandSky uppercase tracking-widest bg-brandSky/10 px-3 py-1 rounded-full border border-brandSky/20 inline-block">
-                International Standard Restorative Care
-              </span>
-              <h2 className="font-headline font-black text-2xl sm:text-4xl text-white leading-tight">
-                <span className="bg-gradient-to-r from-white via-slate-100 to-brandSky bg-clip-text text-transparent">
-                  Dental Tourism Support
+      {/* ─── Dental Tourism Support Section (bg-slate-50/70) ─── */}
+      <section id="tourism" className="w-full bg-slate-50/70 py-20 px-6 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-gradient-to-br from-slate-900 via-brandBlue to-[#1b4393] text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
+            <div className="relative z-10 space-y-8">
+              <div className="text-center space-y-3 max-w-2xl mx-auto">
+                <span className="text-xs font-bold text-brandSky uppercase tracking-widest bg-brandSky/10 px-3 py-1 rounded-full border border-brandSky/20 inline-block">
+                  International Standard Restorative Care
                 </span>
-              </h2>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                Jerush Dentofacial welcomes international patients for high-grade restorative dental care at up to 60%–70% lower costs compared to Western rates.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <h3 className="font-headline font-bold text-base text-white">Virtual Consultation</h3>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  Pre-travel treatment planning and instant cost estimates via digital X-ray review.
+                <h2 className="font-headline font-black text-2xl sm:text-4xl text-white leading-tight">
+                  <span className="bg-gradient-to-r from-white via-slate-100 to-brandSky bg-clip-text text-transparent">
+                    Dental Tourism Support
+                  </span>
+                </h2>
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  Jerush Dentofacial welcomes international patients for high-grade restorative dental care at up to 60%–70% lower costs compared to Western rates.
                 </p>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
-                  <Clock className="w-5 h-5" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-headline font-bold text-base text-white">Virtual Consultation</h3>
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    Pre-travel treatment planning and instant cost estimates via digital X-ray review.
+                  </p>
                 </div>
-                <h3 className="font-headline font-bold text-base text-white">Express Turnaround</h3>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  Prioritized lab milling for international itineraries (3 to 5 business days).
-                </p>
-              </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
-                  <Plane className="w-5 h-5" />
+                <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-headline font-bold text-base text-white">Express Turnaround</h3>
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    Prioritized lab milling for international itineraries (3 to 5 business days).
+                  </p>
                 </div>
-                <h3 className="font-headline font-bold text-base text-white">Patient Assistance</h3>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  Complete guidance on local stay, local transport and post-procedure care.
-                </p>
+
+                <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-left space-y-3 hover:bg-white/15 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-brandSky/20 text-brandSky flex items-center justify-center">
+                    <Plane className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-headline font-bold text-base text-white">Patient Assistance</h3>
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    Complete guidance on local stay, local transport and post-procedure care.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Frequently Asked Questions (FAQs) Section ─── */}
-      <section id="faqs" className="max-w-4xl mx-auto px-6 py-20">
+      {/* ─── Frequently Asked Questions (FAQs) Section (bg-white) ─── */}
+      <section id="faqs" className="w-full bg-white py-20 px-6 border-t border-slate-100">
+        <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <span className="text-[11px] font-bold text-brandSky uppercase tracking-widest bg-gradient-to-r from-brandSky/10 to-brandBlue/10 px-3.5 py-1.5 rounded-full border border-brandSky/20">Patient Knowledge Base</span>
           <h2 className="font-headline font-black text-2xl sm:text-4xl text-slate-900 mt-4">
@@ -1017,7 +1063,8 @@ export default function CrownsBridgesPage() {
             );
           })}
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* ─── Bottom CTA Banner (Strictly Adhering to User Custom Rule) ─── */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
