@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Star, X } from 'lucide-react';
 
 const ROW_1_CARDS = [
@@ -189,6 +189,30 @@ export default function Testimonials({ reviews = [] }) {
     setActiveVideoId(null);
     setActiveInstaReelId(null);
   };
+
+  // Close active modal on Escape key press with continuous focus reclamation for iframes
+  useEffect(() => {
+    if (!activeVideoId && !activeInstaReelId) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+        closeVideo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+
+    const interval = setInterval(() => {
+      if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+        window.focus();
+      }
+    }, 250);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      clearInterval(interval);
+    };
+  }, [activeVideoId, activeInstaReelId]);
 
   const renderStars = (rating) => {
     return (
@@ -451,8 +475,26 @@ export default function Testimonials({ reviews = [] }) {
 
       {/* Instagram Reel Modal Player */}
       {activeInstaReelId && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-          <div className="bg-white w-full max-w-[360px] sm:w-[380px] aspect-[9/16] max-h-[85vh] relative border-[8px] border-white rounded-[2.5rem] shadow-2xl transition-all duration-300">
+        <div
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+              closeVideo();
+            }
+          }}
+          onMouseEnter={() => window.focus()}
+          onMouseMove={() => {
+            if (document.activeElement?.tagName === 'IFRAME') {
+              window.focus();
+            }
+          }}
+          className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md focus:outline-none"
+        >
+          <div
+            className="absolute inset-0 cursor-pointer"
+            onClick={closeVideo}
+          />
+          <div className="bg-white w-full max-w-[360px] sm:w-[380px] aspect-[9/16] max-h-[85vh] relative border-[8px] border-white rounded-[2.5rem] shadow-2xl transition-all duration-300 z-10">
             <button
               onClick={closeVideo}
               className="absolute -top-3 -right-3 z-50 w-9 h-9 rounded-full bg-black border border-white/10 text-pink-400 hover:text-pink-300 hover:scale-110 flex items-center justify-center shadow-lg transition-all duration-300 cursor-pointer"
@@ -466,9 +508,9 @@ export default function Testimonials({ reviews = [] }) {
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
                 allowFullScreen
-                title="Instagram Reel"
+                title="Instagram Reel Player"
               ></iframe>
             </div>
           </div>

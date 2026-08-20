@@ -45,6 +45,8 @@ export default function AppRoutes() {
       <Route path="/treatments/jacket-crowns" element={<CrownsBridgesPage />} />
       <Route path="/treatments/fixed-partial-denture" element={<CrownsBridgesPage />} />
       <Route path="/dental-crowns-bridges" element={<CrownsBridgesPage />} />
+      <Route path="/best-crowns-and-bridges-treatment" element={<CrownsBridgesPage />} />
+      <Route path="/dental-treatments/best-crowns-and-bridges-treatment" element={<CrownsBridgesPage />} />
       <Route path="/treatments/:id" element={<TreatmentDetailPage />} />
       <Route path="/dental-implants" element={<DentalImplantsPage />} />
       <Route path="/dental-treatments/dental-implants-in-chennai" element={<Navigate to="/dental-implants" replace />} />

@@ -18,10 +18,10 @@ Welcome to the comprehensive content guide for the **Dental Crowns & Bridges** w
 
 * **Main Title:** World-Class Dental Crowns & Bridges
 * **Subtitle:** Restore missing or damaged teeth with precision CAD/CAM Zirconia and Ceramic restorations crafted to international standards.
-* **Badges:** `ISO Certified` | `CAD/CAM Digital Dentistry` | `International Dental Tourism Partner`
+* **Badges:** `ISO Certified` | `CAD/CAM Digital Dentistry` | `Best in Class Treatment`
 * **Call to Action (CTA) Buttons:**
-  * `[ Book Virtual Consultation ]`
-  * `[ Request Quote via WhatsApp ]`
+  * `[ Book Appointment ]`
+  * `[ Request a Call]`
 
 ---
 

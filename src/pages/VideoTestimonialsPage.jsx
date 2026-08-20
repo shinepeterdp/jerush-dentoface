@@ -177,12 +177,12 @@ const STATIC_VIDEOS = [
 // Parser helper for URLs
 const parseVideoLink = (url, type) => {
   if (!url) return null;
-  if (type === 'video') {
+  if (type === 'video' || url.includes('youtube.com') || url.includes('youtu.be')) {
     const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const match = url.match(ytRegex);
     return match ? match[1] : null;
-  } else if (type === 'instagram') {
-    const instaRegex = /instagram\.com\/(?:reel|p)\/([A-Za-z0-9_-]+)/;
+  } else if (type === 'instagram' || url.includes('instagram.com')) {
+    const instaRegex = /instagram\.com\/(?:reel|reels|p|tv)\/([A-Za-z0-9_-]+)/;
     const match = url.match(instaRegex);
     return match ? match[1] : null;
   }
@@ -210,16 +210,30 @@ export default function VideoTestimonialsPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [slideDirection, setSlideDirection] = useState(1);
 
-  // Close video modal on Escape
+  // Close video modal on Escape key press with continuous focus reclamation for iframes
   useEffect(() => {
+    if (!activeVideo) return;
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
         setActiveVideo(null);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+
+    window.addEventListener('keydown', handleKeyDown, true);
+
+    // Continuous check to reclaim window focus from cross-origin iframe so ESC key always works
+    const interval = setInterval(() => {
+      if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+        window.focus();
+      }
+    }, 250);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      clearInterval(interval);
+    };
+  }, [activeVideo]);
 
   useEffect(() => {
     const fetchVideoReviews = async () => {
@@ -327,20 +341,13 @@ export default function VideoTestimonialsPage() {
     const videoId = parseVideoLink(video.video_url, video.type);
     if (videoId) {
       setActiveVideo({ ...video, parsedId: videoId });
+    } else {
+      setActiveVideo({ ...video, parsedId: video.video_url });
     }
   };
 
   return (
     <div className="w-full bg-slate-950 text-white font-body text-left relative pt-0 pb-24 min-h-screen overflow-hidden">
-      {/* ─── 1. BREADCRUMB HERO ─── */}
-      <PageBreadcrumbHero
-        title="Patient Video Testimonials"
-        breadcrumbs={[
-          { label: 'Smile Stories', path: '/smile-stories' },
-          { label: 'Video Testimonials', active: true }
-        ]}
-      />
-
       {/* Ambient background glows */}
       <div className="absolute top-20 left-10 w-[500px] h-[500px] bg-brandBlue/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute top-1/3 right-10 w-[600px] h-[600px] bg-brandSky/10 rounded-full blur-[140px] pointer-events-none"></div>
@@ -348,7 +355,7 @@ export default function VideoTestimonialsPage() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
 
         {/* ─── 2. HERO INTRO & STATS ─── */}
-        <section className="text-center space-y-6 pt-6 pb-12">
+        <section className="text-center space-y-6 pt-16 pb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900/90 border border-brandSky/30 rounded-full text-xs font-bold font-headline uppercase tracking-widest text-brandSky shadow-lg shadow-brandSky/5">
             <Sparkles className="w-4 h-4 text-brandSky" />
             Unfiltered Patient Experience
@@ -359,7 +366,7 @@ export default function VideoTestimonialsPage() {
           </h1>
 
           <p className="text-slate-400 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Watch candid recorded reviews from patients who experienced transformative treatments across Dental Implants, Root Canals, Laser Dermatology, and Hair Restoration at Jerush.
+            Watch candid recorded reviews from patients who experienced transformative treatments across Dental Implants, Root Canals, Laser Dermatology and Hair Restoration at Jerush.
           </p>
 
           {/* Social Proof Strip */}
@@ -449,10 +456,7 @@ export default function VideoTestimonialsPage() {
                           <Play className="w-7 h-7 fill-current ml-1" />
                         </span>
                       </div>
-                      <div className="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md rounded-full border border-white/20 text-[10px] font-headline font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-3 h-3 text-brandSky" />
-                        Featured Transformation
-                      </div>
+
                     </div>
 
                     {/* Video Description */}
@@ -754,12 +758,26 @@ export default function VideoTestimonialsPage() {
         {/* ─── 6. VIDEO MODAL PLAYER (Smartphone / Cinema Frame) ─── */}
         <AnimatePresence>
           {activeVideo && (
-            <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl">
+            <div
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+                  setActiveVideo(null);
+                }
+              }}
+              onMouseEnter={() => window.focus()}
+              onMouseMove={() => {
+                if (document.activeElement?.tagName === 'IFRAME') {
+                  window.focus();
+                }
+              }}
+              className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl focus:outline-none"
+            >
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0"
+                className="absolute inset-0 cursor-pointer"
                 onClick={() => setActiveVideo(null)}
               />
 
@@ -797,9 +815,9 @@ export default function VideoTestimonialsPage() {
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}
-                      allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
                       allowFullScreen
-                      title="Instagram Reel"
+                      title="Instagram Reel Player"
                     ></iframe>
                   )}
                 </div>
