@@ -42,9 +42,12 @@ export default function AppRoutes() {
       <Route path="/about/ethical-healthcare" element={<EthicalHealthcarePage />} />
       <Route path="/doctors" element={<DoctorsPage />} />
       <Route path="/treatments" element={<TreatmentsPage />} />
-      <Route path="/treatments/clear-aligners" element={<JerushalignePage />} />
+      <Route path="/treatments/clear-aligners" element={<Navigate to="/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne" replace />} />
       <Route path="/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne" element={<JerushalignePage />} />
       <Route path="/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne/" element={<JerushalignePage />} />
+      <Route path="/treatments/top-quality-invisible-clear-aligners-jerushaligne" element={<JerushalignePage />} />
+      <Route path="/top-quality-invisible-clear-aligners-jerushaligne" element={<JerushalignePage />} />
+      <Route path="/top-quality-invisible-clear-aligners-jerushaligne/" element={<JerushalignePage />} />
       <Route path="/jerushaligne-clear-aligners" element={<JerushalignePage />} />
       <Route path="/jerushaligne" element={<JerushalignePage />} />
       <Route path="/clear-aligners" element={<JerushalignePage />} />

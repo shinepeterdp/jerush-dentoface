@@ -417,26 +417,13 @@ export default function JerushalignePage() {
           </div>
 
           {/* Right Visual Image Showcase */}
-          <div className="lg:col-span-5 space-y-5">
-            <div className="rounded-3xl overflow-hidden shadow-md border border-slate-100 bg-white p-2 flex items-center justify-center group relative">
+          <div className="lg:col-span-5">
+            <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-white p-2 flex items-center justify-center group">
               <img
                 src="/images/treatments/jerushaligne/jerushaligne-overview.webp"
                 alt="Jerushaligne Overview - In-house aligner crafting"
-                className="w-full h-auto max-h-[280px] object-contain transform-gpu group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-auto max-h-[380px] object-contain transform-gpu group-hover:scale-105 transition-transform duration-700 rounded-2xl"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex items-end p-4 pointer-events-none rounded-2xl">
-                <p className="text-white text-xs font-bold">In-House 3D Digital Fabrication Workflow</p>
-              </div>
-            </div>
-            <div className="rounded-3xl overflow-hidden shadow-md border border-slate-100 bg-white p-2 flex items-center justify-center group relative">
-              <img
-                src="/images/treatments/jerushaligne/in-house-precision.webp"
-                alt="3D Digital Scan and Orthodontic Precision"
-                className="w-full h-auto max-h-[240px] object-contain transform-gpu group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent flex items-end p-4 pointer-events-none rounded-2xl">
-                <p className="text-white text-xs font-bold">AI CAD/CAM Movement Simulation</p>
-              </div>
             </div>
           </div>
         </div>

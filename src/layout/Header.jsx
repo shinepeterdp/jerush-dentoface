@@ -643,7 +643,7 @@ export default function Header() {
                               <div className="jerush-megamenu-subgroup">
                                 <h5>Smile Makeover</h5>
                                 <ul>
-                                  <li>{renderDentalIconItem('/treatments/clear-aligners', 'Clear Aligners (Jerush Aligne)', 'clear-aligner.webp', handleLinkClick)}</li>
+                                  <li>{renderDentalIconItem('/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne', 'Clear Aligners (Jerush Aligne)', 'clear-aligner.webp', handleLinkClick)}</li>
                                   <li>{renderDentalIconItem('/treatments/metal-braces', 'Metal Braces', 'metal-braces.webp', handleLinkClick)}</li>
                                   <li>{renderDentalIconItem('/treatments/ceramic-braces', 'Ceramic Braces', 'ceramic-braces.webp', handleLinkClick)}</li>
                                   <li>{renderDentalIconItem('/treatments/lingual-braces', 'Lingual Braces', 'lingual-braces.webp', handleLinkClick)}</li>
@@ -1175,7 +1175,7 @@ export default function Header() {
                   </button>
                   <ul className={`jerush-mobile-subsubmenu ${activeSubAccordion === 'dental' ? 'open' : ''}`}>
                     <li className="jerush-mobile-submenu-header">Smile Makeover</li>
-                    <li>{renderDentalIconItem('/treatments/clear-aligners', 'Clear Aligners (Jerush Aligne)', 'clear-aligner.webp', handleLinkClick, true)}</li>
+                    <li>{renderDentalIconItem('/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne', 'Clear Aligners (Jerush Aligne)', 'clear-aligner.webp', handleLinkClick, true)}</li>
                     <li>{renderDentalIconItem('/treatments/metal-braces', 'Metal Braces', 'metal-braces.webp', handleLinkClick, true)}</li>
                     <li>{renderDentalIconItem('/treatments/ceramic-braces', 'Ceramic Braces', 'ceramic-braces.webp', handleLinkClick, true)}</li>
                     <li>{renderDentalIconItem('/treatments/lingual-braces', 'Lingual Braces', 'lingual-braces.webp', handleLinkClick, true)}</li>
