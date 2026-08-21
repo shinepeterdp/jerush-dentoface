@@ -30,6 +30,7 @@ import TeamPage from '../pages/TeamPage.jsx';
 import CrownsBridgesPage from '../pages/CrownsBridgesPage.jsx';
 import SmileStoriesPage from '../pages/SmileStoriesPage.jsx';
 import DentalCampsPage from '../pages/DentalCampsPage.jsx';
+import JerushalignePage from '../pages/JerushalignePage.jsx';
 
 export default function AppRoutes() {
   return (
@@ -41,6 +42,12 @@ export default function AppRoutes() {
       <Route path="/about/ethical-healthcare" element={<EthicalHealthcarePage />} />
       <Route path="/doctors" element={<DoctorsPage />} />
       <Route path="/treatments" element={<TreatmentsPage />} />
+      <Route path="/treatments/clear-aligners" element={<JerushalignePage />} />
+      <Route path="/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne" element={<JerushalignePage />} />
+      <Route path="/dental-treatments/top-quality-invisible-clear-aligners-jerushaligne/" element={<JerushalignePage />} />
+      <Route path="/jerushaligne-clear-aligners" element={<JerushalignePage />} />
+      <Route path="/jerushaligne" element={<JerushalignePage />} />
+      <Route path="/clear-aligners" element={<JerushalignePage />} />
       <Route path="/treatments/dental-crowns-bridges" element={<CrownsBridgesPage />} />
       <Route path="/treatments/jacket-crowns" element={<CrownsBridgesPage />} />
       <Route path="/treatments/fixed-partial-denture" element={<CrownsBridgesPage />} />

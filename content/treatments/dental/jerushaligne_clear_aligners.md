@@ -38,23 +38,26 @@ Because we manage the entire fabrication workflow in our dedicated digital lab u
 
 ##  Benefits
 
-* **Express 2-Day Kit Delivery:** Take a digital impression today and receive your custom-molded Jerushaligne trays in just 2 days.
 * **100% In-House Precision:** Manufactured directly in our advanced digital lab to ensure maximum quality control and custom fit.
 * **Virtually Invisible Aesthetics:** Crystal-clear, medical-grade thermoplastic trays that straighten teeth without anyone noticing.
 * **100% Removable & Convenient:** Remove your aligners easily while eating your favorite meals, drinking or during oral care.
+* **2-Days Clear  Aligner Kit Delivery:** Get your complete custom-molded Jerushaligne clear aligner kit in just 2 days after your 3D digital scan.
 * **Direct Cost Savings:** In-house production eliminates middleman markups, giving you world-class aligner therapy at a fraction of imported brand costs.
 
 ---
 
 ## Symptoms & Indications
 
-Jerushaligne can effectively correct a wide range of mild, moderate, and complex orthodontic alignment issues:
+Jerushaligne can effectively correct a wide range of mild, moderate and complex orthodontic alignment issues[cite: 4]:
 
-* **Crowded & Overlapping Teeth:** Resolves space constraints in the arch to guide teeth into smooth alignment.
-* **Diastema (Teeth Gaps):** Efficiently closes gaps between front or side teeth.
-* **Overbite & Underbite:** Adjusts improper vertical overlap and jaw relationships.
-* **Crossbite & Open Bite:** Corrects arch width misalignments for improved biting function.
-* **Orthodontic Relapse:** Realigns teeth that have shifted back after wearing traditional braces years ago.
+* **Crowded Teeth:** Fixes space issues to guide squeezed teeth into alignment.
+* **Overlapping Teeth:** Straightens twisted or overlapping teeth for easier cleaning.
+* **Teeth Gaps (Diastema):** Closes unwanted spaces between front or side teeth.
+* **Overbite:** Reduces excessive upper front tooth overlap over lower teeth.
+* **Underbite:** Realigns lower teeth that stick out past upper front teeth.
+* **Crossbite:** Fixes upper teeth that sit inside lower teeth when biting.
+* **Open Bite:** Closes the gap when upper and lower teeth don't meet.
+* **Orthodontic Relapse:** Realigns teeth that shifted back years after wearing braces.
 
 ---
 
@@ -86,7 +89,7 @@ Our ultra-fast 4-step digital treatment workflow for Jerushaligne:
                                   v
 +-------------------------------------------------------------------+
 |  Step 4: Wear & Smile Transformation                              |
-|  Wear your trays 20–22 hours daily, switching sets as guided,     |
+|  Wear your trays 20–22 hours daily, switching sets as guided      |
 |  and track your progress via www.jerushaligne.com.                |
 +-------------------------------------------------------------------+
 ```
